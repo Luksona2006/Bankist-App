@@ -7,14 +7,14 @@ const account1 = {
     pin: 1111,
 
     movementsDates: [
-        '2019-11-18T21:31:17.178Z',
-        '2019-12-23T07:42:02.383Z',
-        '2020-01-28T09:15:04.904Z',
-        '2020-04-01T10:17:24.185Z',
-        '2020-05-08T14:11:59.604Z',
-        '2020-05-27T17:01:17.194Z',
-        '2020-07-11T23:36:17.929Z',
-        '2020-07-12T10:51:36.790Z'
+        '2023-01-19T01:17:12.178Z',
+        '2023-01-18T07:42:02.383Z',
+        '2023-01-12T09:15:04.904Z',
+        '2023-01-01T10:17:24.185Z',
+        '2022-12-24T14:11:59.604Z',
+        '2022-12-02T17:01:17.194Z',
+        '2022-08-11T23:36:17.929Z',
+        '2022-01-02T10:51:36.790Z'
     ]
 };
 
@@ -24,52 +24,52 @@ const account2 = {
     interestRate: 1.5,
     pin: 2222,
     movementsDates: [
-        '2019-11-18T12:04:12.178Z',
-        '2019-11-22T04:22:01.383Z',
-        '2020-01-05T06:51:13.904Z',
-        '2020-01-21T17:53:26.185Z',
-        '2020-04-02T12:23:55.604Z',
-        '2020-05-17T18:21:37.194Z',
-        '2020-08-22T11:54:24.929Z',
-        '2020-08-29T15:31:23.790Z'
+        '2023-01-19T00:11:53.178Z',
+        '2023-01-02T12:21:34.383Z',
+        '2023-01-08T02:35:52.904Z',
+        '2023-02-28T09:12:11.185Z',
+        '2022-12-24T19:14:34.604Z',
+        '2022-12-02T15:25:52.194Z',
+        '2022-08-11T22:17:23.929Z',
+        '2022-01-02T02:31:41.790Z'
     ]
 };
 
-const account3 = {
-    owner: 'Steven Thomas Williams',
-    movements: [200, -200, 340, -300, -20, 50, 400, -460],
-    interestRate: 0.7,
-    pin: 3333,
-    movementsDates: [
-        '2017-05-05T22:01:27.178Z',
-        '2017-08-14T06:12:53.383Z',
-        '2018-01-23T05:23:12.904Z',
-        '2018-02-32T12:23:27.185Z',
-        '2019-01-21T15:52:04.604Z',
-        '2019-03-14T12:24:09.194Z',
-        '2019-05-04T03:31:21.929Z',
-        '2019-09-11T12:31:34.790Z'
-    ]
-};
+// const account3 = {
+//     owner: 'Steven Thomas Williams',
+//     movements: [200, -200, 340, -300, -20, 50, 400, -460],
+//     interestRate: 0.7,
+//     pin: 3333,
+//     movementsDates: [
+//         '2017-05-05T22:01:27.178Z',
+//         '2017-08-14T06:12:53.383Z',
+//         '2018-01-23T05:23:12.904Z',
+//         '2018-02-32T12:23:27.185Z',
+//         '2019-01-21T15:52:04.604Z',
+//         '2019-03-14T12:24:09.194Z',
+//         '2019-05-04T03:31:21.929Z',
+//         '2019-09-11T12:31:34.790Z'
+//     ]
+// };
 
-const account4 = {
-    owner: 'Sarah Smith',
-    movements: [430, 1000, 700, 50, 90],
-    interestRate: 1,
-    pin: 4444,
-    movementsDates: [
-        '2020-05-32T22:44:12.178Z',
-        '2010-11-15T01:21:01.383Z',
-        '2020-02-53T03:34:34.904Z',
-        '2020-04-41T15:24:25.185Z',
-        '2021-01-23T16:23:49.604Z',
-        '2021-04-12T12:51:12.194Z',
-        '2021-07-05T03:46:37.929Z',
-        '2021-11-15T11:58:31.790Z'
-    ]
-};
+// const account4 = {
+//     owner: 'Sarah Smith',
+//     movements: [430, 1000, 700, 50, 90],
+//     interestRate: 1,
+//     pin: 4444,
+//     movementsDates: [
+//         '2020-05-32T22:44:12.178Z',
+//         '2010-11-15T01:21:01.383Z',
+//         '2020-02-53T03:34:34.904Z',
+//         '2020-04-41T15:24:25.185Z',
+//         '2021-01-23T16:23:49.604Z',
+//         '2021-04-12T12:51:12.194Z',
+//         '2021-07-05T03:46:37.929Z',
+//         '2021-11-15T11:58:31.790Z'
+//     ]
+// }
 
-const accounts = [account1, account2, account3, account4];
+const accounts = [account1, account2];
 
 /////////////////////////////////////////////////
 // Elements
@@ -113,6 +113,32 @@ const btnCancelTrans = document.querySelector('#cancel');
 // Functions
 
 // Add movements divs
+
+const formatMovementDate = function(date) {
+    const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+    const daysPassed = calcDaysPassed(new Date(), date);
+
+    if(daysPassed < 1) return 'Today'
+    if(daysPassed >= 1 && daysPassed < 2) return 'Yesterday'
+    if(daysPassed <= 6) return `${daysPassed} days ago` 
+    if(daysPassed / 7 >= 1 && daysPassed / 7 <= 4) return `${Math.round(daysPassed / 7)} ${Math.round(daysPassed / 7) === 1 ? 'week' : 'weeks'} ago`
+    if(daysPassed / 30 >= 1 && daysPassed / 30 <= 12 || daysPassed / 31 >= 1 && daysPassed / 31 <= 12) {
+        if(daysPassed / 30 >= 1 && daysPassed / 30 <= 12) {
+            return `${Math.round(daysPassed / 30)} ${Math.round(daysPassed / 30) === 1 ? 'month' : 'months'} ago` 
+        } else {
+            return `${Math.round(daysPassed / 31)} ${Math.round(daysPassed / 31) === 1 ? 'month' : 'months'} ago` 
+        }
+    }
+    if(daysPassed >= 365) {
+        const day = `${date.getDate()}`.padStart(2,0);
+        const month = `${date.getMonth() + 1}`.padStart(2,0)
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`
+    }
+
+}
+
 const displayMovements = function (account, sort = false) {
     containerMovements.innerHTML = ''
 
@@ -120,14 +146,8 @@ const displayMovements = function (account, sort = false) {
 
     movs.forEach((mov, i) => {
         const movType = mov > 0 ? 'deposit' : 'withdrawal'
-        const date = new Date(account.movementsDates[i])
-        const day = `${date.getDate()}`.padStart(2,0);
-        const month = `${date.getMonth() + 1}`.padStart(2,0);
-        const year = date.getFullYear();
-        const hour = date.getHours();
-        const min = date.getMinutes();
-
-        const displayDate = `${day}/${month}/${year}`;
+        const date = new Date(account.movementsDates[i]) 
+        const displayDate = formatMovementDate(date)
 
         const movHtml = `
         <div class="movements__row">
@@ -478,8 +498,6 @@ inputTransferAmount.onkeyup = function() {
 inputLoanAmount.onkeyup = function() {
     if(this.value[0] === '0') this.value = 0;
 }
-
-
 
 
 
