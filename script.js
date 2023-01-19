@@ -112,7 +112,7 @@ const btnCancelTrans = document.querySelector('#cancel');
 /////////////////////////////////////////////////
 // Functions
 
-// Add movements divs
+// Date format
 
 const formatMovementDate = function(date) {
     const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
@@ -138,6 +138,8 @@ const formatMovementDate = function(date) {
     }
 
 }
+
+// Add movements divs
 
 const displayMovements = function (account, sort = false) {
     containerMovements.innerHTML = ''
@@ -207,7 +209,10 @@ const logInfunc = function (e) {
     if (currentAccount?.pin === +inputLoginPin.value) {
         labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
         labelWelcome[1].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-        containerApp.style.opacity = '1';
+        containerApp.style.display = 'grid';
+        setTimeout(() => {
+            containerApp.style.opacity = '1'
+        }, 0);
 
         // Create current date and time
 
