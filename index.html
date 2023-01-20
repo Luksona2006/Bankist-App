@@ -1,172 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="shortcut icon" type="image/png" href="/icon.png" />
 
-    <link
-      href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="shortcut icon" type="image/png" href="/icon.png" />
 
-    <link rel="stylesheet" href="style.css" />
-    <title>Bankist</title>
-  </head>
-  <body>
-    <!-- POPUPS -->
-    <div class="popUp-loading">
-      <p>Loading</p>
-      <svg class="loading" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8.19583 3.84292C12.7007 1.74225 18.0555 3.69127 20.1562 8.19613C22.2568 12.701 20.3079 18.0558 15.803 20.1565C11.2981 22.2571 5.94329 20.3081 3.84263 15.8033C1.74198 11.2984 3.69098 5.94357 8.19583 3.84292Z" stroke="#F5F5F5" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round"/>
-        <path d="M8.19531 3.84277C12.7002 1.74211 18.055 3.69112 20.1556 8.19598" stroke="#F5F5F5" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <title>Bankist</title>
+</head>
+
+<body>
+  <!-- POPUPS -->
+  <div class="popUp-loading">
+    <p>Loading</p>
+    <svg class="loading" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M8.19583 3.84292C12.7007 1.74225 18.0555 3.69127 20.1562 8.19613C22.2568 12.701 20.3079 18.0558 15.803 20.1565C11.2981 22.2571 5.94329 20.3081 3.84263 15.8033C1.74198 11.2984 3.69098 5.94357 8.19583 3.84292Z"
+        stroke="#F5F5F5" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round" />
+      <path d="M8.19531 3.84277C12.7002 1.74211 18.055 3.69112 20.1556 8.19598" stroke="#F5F5F5" stroke-width="2"
+        stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <div class="popUp-error">
+    <p>WRONG PIN</p>
+    <svg width="32" height="32" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M208.5 191.5C209.619 192.615 210.507 193.939 211.112 195.398C211.718 196.857 212.03 198.42 212.03 200C212.03 201.579 211.718 203.143 211.112 204.602C210.507 206.06 209.619 207.385 208.5 208.5C206.236 210.735 203.182 211.988 200 211.988C196.818 211.988 193.765 210.735 191.5 208.5L128 145L64.5002 208.5C62.2357 210.735 59.1819 211.988 56.0002 211.988C52.8184 211.988 49.7647 210.735 47.5002 208.5C46.3814 207.385 45.4938 206.06 44.8881 204.602C44.2825 203.143 43.9707 201.579 43.9707 200C43.9707 198.42 44.2825 196.857 44.8881 195.398C45.4938 193.939 46.3814 192.615 47.5002 191.5L111 128L47.5002 64.4998C45.2458 62.2455 43.9794 59.1879 43.9794 55.9998C43.9794 54.4212 44.2903 52.8581 44.8944 51.3997C45.4985 49.9412 46.3839 48.6161 47.5002 47.4998C48.6164 46.3836 49.9416 45.4981 51.4 44.894C52.8584 44.2899 54.4216 43.979 56.0002 43.979C59.1883 43.979 62.2458 45.2455 64.5002 47.4998L128 111L191.5 47.4998C193.755 45.2455 196.812 43.979 200 43.979C203.188 43.979 206.246 45.2455 208.5 47.4998C210.755 49.7542 212.021 52.8117 212.021 55.9998C212.021 59.1879 210.755 62.2455 208.5 64.4998L145 128L208.5 191.5Z"
+        fill="#e52a5a" />
+    </svg>
+  </div>
+
+  <div class="popUp-transfers">
+    <p class="transfer__text">ARE YOU SURE?</p>
+    <div>
+      <button id="confirm">Confirm</button>
+      <button id="cancel">Cancel</button>
     </div>
+  </div>
 
-    <div class="popUp-error">
-      <p>WRONG PIN</p>
-        <svg width="32" height="32" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M208.5 191.5C209.619 192.615 210.507 193.939 211.112 195.398C211.718 196.857 212.03 198.42 212.03 200C212.03 201.579 211.718 203.143 211.112 204.602C210.507 206.06 209.619 207.385 208.5 208.5C206.236 210.735 203.182 211.988 200 211.988C196.818 211.988 193.765 210.735 191.5 208.5L128 145L64.5002 208.5C62.2357 210.735 59.1819 211.988 56.0002 211.988C52.8184 211.988 49.7647 210.735 47.5002 208.5C46.3814 207.385 45.4938 206.06 44.8881 204.602C44.2825 203.143 43.9707 201.579 43.9707 200C43.9707 198.42 44.2825 196.857 44.8881 195.398C45.4938 193.939 46.3814 192.615 47.5002 191.5L111 128L47.5002 64.4998C45.2458 62.2455 43.9794 59.1879 43.9794 55.9998C43.9794 54.4212 44.2903 52.8581 44.8944 51.3997C45.4985 49.9412 46.3839 48.6161 47.5002 47.4998C48.6164 46.3836 49.9416 45.4981 51.4 44.894C52.8584 44.2899 54.4216 43.979 56.0002 43.979C59.1883 43.979 62.2458 45.2455 64.5002 47.4998L128 111L191.5 47.4998C193.755 45.2455 196.812 43.979 200 43.979C203.188 43.979 206.246 45.2455 208.5 47.4998C210.755 49.7542 212.021 52.8117 212.021 55.9998C212.021 59.1879 210.755 62.2455 208.5 64.4998L145 128L208.5 191.5Z" fill="#e52a5a"/>
-        </svg>   
-    </div>
+  <div class="blur"></div>
 
-    <div class="popUp-transfers">
-      <p class="transfer__text">ARE YOU SURE?</p>
-      <div>
-        <button id="confirm">Confirm</button>
-        <button id="cancel">Cancel</button>
-      </div>
-    </div>
-
-    <div class="blur"></div>
-
-    <!-- TOP NAVIGATION -->
-    <div class="container">
-      <nav>
-        <p class="welcome welcome-main">Log in to get started</p>
-        <img src="logo.png" alt="Logo" class="logo" />
-        <form class="login">
-          <input
-            type="text"
-            placeholder="user"
-            class="login__input login__input--user"
-          />
-          <input
-            type="text"
-            placeholder="PIN"
-            maxlength="4"
-            class="login__input login__input--pin"
-          />
-          <button class="login__btn">&rarr;</button>
-        </form>
-      </nav>
-    </div>
-
-    <div class="container">
-      <p class="welcome welcome-mob">Log in to get started</p>
-      <main class="app">
-        <!-- BALANCE -->
-        <div class="balance">
+  <!-- TOP NAVIGATION -->
+  <div class="container">
+    <nav>
+      <p class="welcome welcome-main">Log in to get started</p>
+      <img src="logo.png" alt="Logo" class="logo" />
+      <button class="login__icon">
+        <p>Log In</p>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.325 16.275C9.14167 16.0583 9.05 15.8123 9.05 15.537C9.05 15.2623 9.14167 15.0333 9.325 14.85L11.175 13H4C3.71667 13 3.47933 12.904 3.288 12.712C3.096 12.5207 3 12.2833 3 12C3 11.7167 3.096 11.479 3.288 11.287C3.47933 11.0957 3.71667 11 4 11H11.175L9.325 9.15C9.125 8.95 9.025 8.71267 9.025 8.438C9.025 8.16267 9.125 7.925 9.325 7.725C9.50833 7.525 9.73767 7.425 10.013 7.425C10.2877 7.425 10.5167 7.51667 10.7 7.7L14.3 11.3C14.4 11.4 14.471 11.5083 14.513 11.625C14.5543 11.7417 14.575 11.8667 14.575 12C14.575 12.1333 14.5543 12.2583 14.513 12.375C14.471 12.4917 14.4 12.6 14.3 12.7L10.7 16.3C10.5 16.5 10.2667 16.5917 10 16.575C9.73333 16.5583 9.50833 16.4583 9.325 16.275ZM13 21C12.7167 21 12.4793 20.904 12.288 20.712C12.096 20.5207 12 20.2833 12 20C12 19.7167 12.096 19.4793 12.288 19.288C12.4793 19.096 12.7167 19 13 19H19V5H13C12.7167 5 12.4793 4.904 12.288 4.712C12.096 4.52067 12 4.28333 12 4C12 3.71667 12.096 3.479 12.288 3.287C12.4793 3.09567 12.7167 3 13 3H19C19.55 3 20.021 3.19567 20.413 3.587C20.8043 3.979 21 4.45 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.021 20.8043 19.55 21 19 21H13Z" fill="#F5F5F5"/>
+        </svg>
+      </button>
+        
+      <form class="login">
+        <div class="form__wrapper">
+          <svg class="login__hide" width="32" height="32" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 24C107.431 24 87.3235 30.0995 70.2207 41.5272C53.118 52.9548 39.7881 69.1974 31.9166 88.2009C24.0451 107.204 21.9855 128.115 25.9984 148.289C30.0112 168.463 39.9163 186.994 54.4609 201.539C69.0056 216.084 87.5366 225.989 107.711 230.002C127.885 234.015 148.796 231.955 167.799 224.083C186.803 216.212 203.045 202.882 214.473 185.779C225.901 168.677 232 148.569 232 128C231.974 100.426 221.008 73.9882 201.51 54.4901C182.012 34.9921 155.574 24.0265 128 24ZM128 216C110.595 216 93.5814 210.839 79.1099 201.169C64.6383 191.5 53.3592 177.756 46.6986 161.676C40.0381 145.596 38.2954 127.902 41.6909 110.832C45.0864 93.7617 53.4676 78.0816 65.7747 65.7746C78.0817 53.4676 93.7618 45.0864 110.832 41.6909C127.902 38.2954 145.596 40.0381 161.676 46.6986C177.756 53.3591 191.5 64.6383 201.169 79.1098C210.839 93.5813 216 110.595 216 128C215.974 151.331 206.694 173.699 190.196 190.196C173.699 206.694 151.331 215.974 128 216ZM165.7 154.3C167.202 155.817 168.045 157.865 168.045 160C168.045 162.135 167.202 164.183 165.7 165.7C164.171 167.179 162.127 168.005 160 168.005C157.873 168.005 155.829 167.179 154.3 165.7L128 139.3L101.7 165.7C100.171 167.179 98.1271 168.005 96 168.005C93.873 168.005 91.8292 167.179 90.3 165.7C88.7978 164.183 87.955 162.135 87.955 160C87.955 157.865 88.7978 155.817 90.3 154.3L116.7 128L90.3 101.7C89.0243 100.146 88.3724 98.1723 88.471 96.1639C88.5697 94.1555 89.4119 92.2556 90.8337 90.8337C92.2556 89.4118 94.1555 88.5696 96.164 88.471C98.1724 88.3724 100.146 89.0243 101.7 90.3L128 116.7L154.3 90.3C155.854 89.0243 157.828 88.3724 159.836 88.471C161.845 88.5696 163.744 89.4118 165.166 90.8337C166.588 92.2556 167.43 94.1555 167.529 96.1639C167.628 98.1723 166.976 100.146 165.7 101.7L139.3 128L165.7 154.3Z" fill="black"/>
+          </svg>
+            
           <div>
-            <p class="balance__label">Current balance</p>
-            <p class="balance__date">
-              As of <span class="date">05/03/2037</span>
-            </p>
+            <label for="username">Username</label>
+            <input type="text" placeholder="Username" class="login__input login__input--user" name="username" />
           </div>
-          <div class="balance__value-div">
-            <p class="balance__value">0000€</p>
-            <span>+0000€</span>
+          <div>
+            <label for="username">Pin</label>
+            <input type="text" placeholder="Pin" maxlength="4" class="login__input login__input--pin" />
+          </div>
+          <button class="login__btn">Log In</button>
+          <button class="register__btn">Create account</button>
+        </div>
+      </form>
+    </nav>
+  </div>
+
+  <div class="container">
+    <p class="welcome welcome-mob">Log in to get started</p>
+    <main class="app">
+      <!-- BALANCE -->
+      <div class="balance">
+        <div>
+          <p class="balance__label">Current balance</p>
+          <p class="balance__date">
+            As of <span class="date">05/03/2037</span>
+          </p>
+        </div>
+        <div class="balance__value-div">
+          <p class="balance__value">0000€</p>
+          <span>+0000€</span>
+        </div>
+      </div>
+
+      <!-- MOVEMENTS -->
+      <div class="movements">
+        <div class="movements__row">
+          <div class="movements__deposit-date">
+            <div class="movements__type movements__type--deposit">2 deposit</div>
+            <div class="movements__date">3 days ago</div>
+          </div>
+          <div class="movements__value">4 000€</div>
+        </div>
+        <div class="movements__row">
+          <div class="movements__type movements__type--withdrawal">
+            1 withdrawal
+          </div>
+          <div class="movements__date">24/01/2037</div>
+          <div class="movements__value">-378€</div>
+        </div>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="summary">
+        <div class="summary__value-blocks">
+          <div class="summary-block">
+            <p class="summary__label">In</p>
+            <p class="summary__value summary__value--in">0000€</p>
+          </div>
+          <div class="summary-block">
+            <p class="summary__label">Out</p>
+            <p class="summary__value summary__value--out">0000€</p>
+          </div>
+          <div class="summary-block">
+            <p class="summary__label">Interest</p>
+            <p class="summary__value summary__value--interest">0000€</p>
           </div>
         </div>
-
-        <!-- MOVEMENTS -->
-        <div class="movements">
-          <div class="movements__row">
-            <div class="movements__deposit-date">
-              <div class="movements__type movements__type--deposit">2 deposit</div>
-              <div class="movements__date">3 days ago</div>
-            </div>
-            <div class="movements__value">4 000€</div>
-          </div>
-          <div class="movements__row">
-            <div class="movements__type movements__type--withdrawal">
-              1 withdrawal
-            </div>
-            <div class="movements__date">24/01/2037</div>
-            <div class="movements__value">-378€</div>
-          </div>
-        </div>
-
-        <!-- SUMMARY -->
-        <div class="summary">
-          <div class="summary__value-blocks">
-            <div class="summary-block">
-              <p class="summary__label">In</p>
-              <p class="summary__value summary__value--in">0000€</p>
-            </div>
-            <div class="summary-block">
-              <p class="summary__label">Out</p>
-              <p class="summary__value summary__value--out">0000€</p>
-            </div>
-            <div class="summary-block">
-              <p class="summary__label">Interest</p>
-              <p class="summary__value summary__value--interest">0000€</p>
-            </div>
-          </div>
-         <div>
+        <div>
           <button class="btn--sort">&downarrow; SORT</button>
-         </div>
         </div>
+      </div>
 
-        <!-- OPERATION: TRANSFERS -->
-        <div class="operation operation--transfer">
-          <h2>Transfer money</h2>
-          <form class="form form--transfer">
-            <input type="text" class="form__input form__input--to" />
-            <input type="number" class="form__input form__input--amount" />
-            <button class="form__btn form__btn--transfer">&rarr;</button>
-            <label class="form__label">Transfer to</label>
-            <label class="form__label">Amount</label>
-          </form>
-        </div>
+      <!-- OPERATION: TRANSFERS -->
+      <div class="operation operation--transfer">
+        <h2>Transfer money</h2>
+        <form class="form form--transfer">
+          <input type="text" class="form__input form__input--to" />
+          <input type="number" class="form__input form__input--amount" />
+          <button class="form__btn form__btn--transfer">&rarr;</button>
+          <label class="form__label">Transfer to</label>
+          <label class="form__label">Amount</label>
+        </form>
+      </div>
 
-        <!-- OPERATION: LOAN -->
-        <div class="operation operation--loan">
-          <h2>Request loan</h2>
-          <form class="form form--loan">
-            <input type="number" class="form__input form__input--loan-amount" />
-            <button class="form__btn form__btn--loan">&rarr;</button>
-            <label class="form__label form__label--loan">Amount</label>
-          </form>
-        </div>
+      <!-- OPERATION: LOAN -->
+      <div class="operation operation--loan">
+        <h2>Request loan</h2>
+        <form class="form form--loan">
+          <input type="number" class="form__input form__input--loan-amount" />
+          <button class="form__btn form__btn--loan">&rarr;</button>
+          <label class="form__label form__label--loan">Amount</label>
+        </form>
+      </div>
 
-        <!-- OPERATION: CLOSE -->
-        <div class="operation operation--close">
-          <h2>Close account</h2>
-          <form class="form form--close">
-            <input type="text" class="form__input form__input--user" />
-            <input
-              type="password"
-              maxlength="6"
-              class="form__input form__input--pin"
-            />
-            <button class="form__btn form__btn--close">&rarr;</button>
-            <label class="form__label">Confirm user</label>
-            <label class="form__label">Confirm PIN</label>
-          </form>
-        </div>
+      <!-- OPERATION: CLOSE -->
+      <div class="operation operation--close">
+        <h2>Close account</h2>
+        <form class="form form--close">
+          <input type="text" class="form__input form__input--user" />
+          <input type="password" maxlength="6" class="form__input form__input--pin" />
+          <button class="form__btn form__btn--close">&rarr;</button>
+          <label class="form__label">Confirm user</label>
+          <label class="form__label">Confirm PIN</label>
+        </form>
+      </div>
 
-        <!-- LOGOUT TIMER -->
-        <p class="logout-timer">
-          You will be logged out in <span class="timer">10:00</span>
-        </p>
-      </main>        
-    </div>
+      <!-- LOGOUT TIMER -->
+      <p class="logout-timer">
+        You will be logged out in <span class="timer">10:00</span>
+      </p>
+    </main>
+  </div>
 
-    <!-- <footer>
+  <!-- <footer>
       &copy; by Jonas Schmedtmann
     </footer> -->
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
+
 </html>

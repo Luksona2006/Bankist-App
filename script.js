@@ -111,6 +111,9 @@ const popUpTransfers = document.querySelector('.popUp-transfers')
 const btnConfirmTrans = document.querySelector('#confirm');
 const popUpTransferText = document.querySelector('.transfer__text')
 const btnCancelTrans = document.querySelector('#cancel');
+const btnLoginIcon = document.querySelector('.login__icon')
+const loginPopUp = document.querySelector('.login')
+const loginPopUpHide = document.querySelector('.login__hide')
 
 
 /////////////////////////////////////////////////
@@ -258,32 +261,50 @@ const logInfunc = function (e) {
     timer = startLogOutTimer()
     currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
     if (currentAccount?.pin === +inputLoginPin.value) {
-        labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-        labelWelcome[1].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-        containerApp.style.display = 'grid';
-        setTimeout(() => {
-            containerApp.style.opacity = '1'
-        }, 0);
 
-        // Create current date and time
+        loginPopUp.style.opacity = '0'
+        loginPopUp.style.top = '-50%'
 
-        const currentDate = new Date()
-        const day = `${currentDate.getDate()}`.padStart(2, 0);
-        const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
-        const year = currentDate.getFullYear();
-        const hour = currentDate.getHours();
-        const min = `${currentDate.getMinutes()}`.padStart(2, 0);
-
-        labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
-        inputLoginUsername.value = '';
-        inputLoginPin.value = '';
-
-        inputLoginUsername.blur();
-        inputLoginPin.blur();
-
-        updateUI(currentAccount)
-
+        delay(0)
+        .then(() => {
+            popUpLoading.style.display = 'flex'
+            popUpLoading.style.opacity = '1'
+        })
+        .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+            popUpLoading.style.opacity = '0'
+            delay(400).then(() => popUpLoading.style.display = 'none')
+            .then(() => {
+                blurPopUp.style.opacity = '0'
+                setTimeout(() => {
+                    blurPopUp.style.display = 'none'
+                }, 500);
+            }).then(() => {
+                labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+                labelWelcome[1].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+                containerApp.style.display = 'grid';
+                containerApp.style.opacity = '1'
+    
+        
+                // Create current date and time
+        
+                const currentDate = new Date()
+                const day = `${currentDate.getDate()}`.padStart(2, 0);
+                const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
+                const year = currentDate.getFullYear();
+                const hour = currentDate.getHours();
+                const min = `${currentDate.getMinutes()}`.padStart(2, 0);
+        
+                labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+        
+                inputLoginUsername.value = '';
+                inputLoginPin.value = '';
+        
+                inputLoginUsername.blur();
+                inputLoginPin.blur();
+        
+                updateUI(currentAccount)
+            })
+        }))
     } else {
         if (!currentAccount) {
             popUpErrorText.innerText = 'WRONG USER'
@@ -439,6 +460,7 @@ function popupFunc(popup, type) {
                             blurPopUp.style.opacity = '0'
                             popUpLoading.style.opacity = '0'
                         })
+                        .then(() => delay(500))
                         .then(() => {
                             blurPopUp.style.display = 'none'
                             popUpLoading.style.display = 'none'
@@ -479,6 +501,7 @@ function popupFunc(popup, type) {
                                 blurPopUp.style.opacity = '0'
                                 popUpLoading.style.opacity = '0'
                             })
+                            .then(() => delay(500))
                             .then(() => {
                                 blurPopUp.style.display = 'none'
                                 popUpLoading.style.display = 'none'
@@ -498,94 +521,119 @@ function popupFunc(popup, type) {
                         inputCloseUsername.value = '';
                         inputClosePin.value = '';
                     }))
-                }
             }
         }
+    }
 
-        btnConfirmTrans.addEventListener('click', confirmTrans)
+    btnConfirmTrans.addEventListener('click', confirmTrans)
 
-        // CANCEL TRANSFER
+    // CANCEL TRANSFER
 
-        const cancelTrans = function (e) {
-            e.preventDefault()
-            popUpTransfers.style.opacity = '0'
-            blurPopUp.style.opacity = '0'
-            setTimeout(() => {
-                blurPopUp.style.display = 'none'
-            }, 0);
-
-            if (type === 'transfer') {
-                inputTransferAmount.value = ''
-                inputTransferTo.value = ''
-            } else {
-                if (type === 'loan') {
-                    inputLoanAmount.value = ''
-                } else {
-                    if (type === 'close') {
-                        inputCloseUsername.value = '';
-                        inputClosePin.value = '';
-                    }
-                }
-            }
-        }
-
-        btnCancelTrans.addEventListener('click', cancelTrans)
-
-        // POPUP STYLES
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        blurPopUp.style.display = 'block'
+    const cancelTrans = function (e) {
+        e.preventDefault()
+        popUpTransfers.style.opacity = '0'
+        blurPopUp.style.opacity = '0'
         setTimeout(() => {
-            blurPopUp.style.opacity = '1'
-        }, 0);
-        if (popup === popUpError) {
-            popup.style.display = 'flex';
-            popup.style.opacity = '1'
-            popup.style.top = '24px'
+            blurPopUp.style.display = 'none'
+        }, 500);
 
-            delay(2000)
-                .then(() => {
-                    popup.style.top = '-120px'
-                    popup.style.opacity = '0'
-                    blurPopUp.style.opacity = '0'
-                })
-                .then(() => delay(400)
-                    .then(() => {
-                        blurPopUp.style.display = 'none'
-                        popup.style.display = 'none'
-                    }))
-
-
+        if (type === 'transfer') {
+            inputTransferAmount.value = ''
+            inputTransferTo.value = ''
         } else {
-            popup.style.display = 'flex'
-            setTimeout(() => {
-                popup.style.opacity = '1'
-            }, 0);
+            if (type === 'loan') {
+                inputLoanAmount.value = ''
+            } else {
+                if (type === 'close') {
+                    inputCloseUsername.value = '';
+                    inputClosePin.value = '';
+                }
+            }
         }
     }
 
+    btnCancelTrans.addEventListener('click', cancelTrans)
 
-    // SORT
+    // POPUP STYLES
 
-    let sorted = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    blurPopUp.style.display = 'block'
+    setTimeout(() => {
+        blurPopUp.style.opacity = '1'
+    }, 0);
+    if (popup === popUpError) {
+        popup.style.display = 'flex';
+        popup.style.opacity = '1'
+        popup.style.top = '24px'
 
-    const sortFunc = function (e) {
-        e.preventDefault();
-        displayMovements(currentAccount, !sorted);
-        sorted = !sorted;
+        delay(2000)
+            .then(() => {
+                popup.style.top = '-120px'
+                popup.style.opacity = '0'
+                blurPopUp.style.opacity = '0'
+            })
+            .then(() => delay(500)
+                .then(() => {
+                    blurPopUp.style.display = 'none'
+                    popup.style.display = 'none'
+                }))
+
+
+    } else {
+        popup.style.display = 'flex'
+        setTimeout(() => {
+            popup.style.opacity = '1'
+            popup.style.top = '50%'
+        }, 0);
     }
+}
 
-    btnSort.addEventListener('click', sortFunc)
 
-    // FIRST NUMBER SHOULDN'T EQUAL TO 0
+// SORT
 
-    inputTransferAmount.onkeyup = function () {
-        if (this.value[0] === '0') this.value = 0;
-    }
+let sorted = false;
 
-    inputLoanAmount.onkeyup = function () {
-        if (this.value[0] === '0') this.value = 0;
-    }
+const sortFunc = function (e) {
+    e.preventDefault();
+    displayMovements(currentAccount, !sorted);
+    sorted = !sorted;
+}
+
+btnSort.addEventListener('click', sortFunc)
+
+// FIRST NUMBER SHOULDN'T EQUAL TO 0
+
+inputTransferAmount.onkeyup = function () {
+    if (this.value[0] === '0') this.value = 0;
+}
+
+inputLoanAmount.onkeyup = function () {
+    if (this.value[0] === '0') this.value = 0;
+}
+
+
+btnLoginIcon.addEventListener('click', function(e) {
+    e.preventDefault();
+    loginPopUp.style.opacity = '1'
+    loginPopUp.style.top = '50%'
+
+    blurPopUp.style.display = 'block'
+    setTimeout(() => {
+        blurPopUp.style.opacity = '1'
+    }, 0);
+})
+
+loginPopUpHide.addEventListener('click', function(e) {
+    e.preventDefault();
+    loginPopUp.style.opacity = '0'
+    loginPopUp.style.top = '-50%'
+
+    blurPopUp.style.opacity = '0'
+    setTimeout(() => {
+        blurPopUp.style.display = 'none'
+    }, 500);
+})
+
 
 
 
