@@ -168,9 +168,11 @@ const displayMovements = function (account, sort = false) {
 
         const movHtml = `
         <div class="movements__row">
-          <div class="movements__type movements__type--${movType}">${i + 1} ${movType}</div>
-          <div class="movemenets__date">${displayDate}</div>
-          <div class="movements__value">${formattedMov}</div>
+            <div class="movements__deposit-date">
+                <div class="movements__type movements__type--${movType}">${i + 1} ${movType}</div>
+                <div class="movemenets__date">${displayDate}</div>
+            </div>
+            <div class="movements__value">${formattedMov}</div>
         </div>
         `;
 
@@ -217,14 +219,14 @@ const updateUI = function (acc) {
 
 // LogOut Timer
 
-const startLogOutTimer = function() {
+const startLogOutTimer = function () {
     let time = 600;
     const clock = function () {
-        const min = String(Math.trunc(time / 60)).padStart(2,0);
-        const seconds = String(Math.trunc(time % 60)).padStart(2,0);
+        const min = String(Math.trunc(time / 60)).padStart(2, 0);
+        const seconds = String(Math.trunc(time % 60)).padStart(2, 0);
 
         labelTimer.textContent = `${min}:${seconds}`;
-        if(time === 0) {
+        if (time === 0) {
             clearInterval(timer)
             labelWelcome.textContent = 'Log in to get started'
             containerApp.style.opacity = '0'
@@ -233,7 +235,7 @@ const startLogOutTimer = function() {
             }, 1000)
         }
 
-        if(time === 30) {
+        if (time === 30) {
             labelTimer.style.color = 'red'
         }
 
@@ -251,7 +253,7 @@ let currentAccount, timer;
 
 const logInfunc = function (e) {
     e.preventDefault()
-    if(timer) clearInterval(timer)
+    if (timer) clearInterval(timer)
 
     timer = startLogOutTimer()
     currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
@@ -389,7 +391,7 @@ function popupFunc(popup, type) {
     // Reset timer
     clearInterval(timer)
     timer = startLogOutTimer();
-    
+
 
     // CONFIRM && CANCEL TRANSFER || LOAN || CLOSE ACC
     const confirmTrans = function (e) {
@@ -406,14 +408,6 @@ function popupFunc(popup, type) {
             const amountFunc = () => type === 'transfer' ? +inputTransferAmount.value : +inputLoanAmount.value;
             const amount = amountFunc();
 
-            if (type === 'transfer') {
-                const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
-                recieverAcc.movements.push(amount)
-                recieverAcc.movementsDates.push(new Date().toISOString())
-            }
-
-            currentAccount.movements.push(type === 'transfer' ? -amount : amount);
-
             if (labelBalanceSpan.style.bottom == '-16px') {
                 labelBalance.style.color = '#444'
                 labelBalanceSpan.style.opacity = '0'
@@ -425,8 +419,21 @@ function popupFunc(popup, type) {
                     popUpLoading.style.display = 'flex'
                     popUpLoading.style.opacity = '1'
                 })
-                .then(() => delay(4000).then(() => {
+                .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+                    if (type === 'transfer') {
+                        const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
+                        recieverAcc.movements.push(amount)
+                        recieverAcc.movementsDates.push(new Date().toISOString())
+                    }
+
+                    currentAccount.movements.push(type === 'transfer' ? -amount : amount);
+
+                    // AFTER CLICK RESET ALL INPUT VALUES
+
+                    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+
                     updateUI(currentAccount)
+
                     delay(100)
                         .then(() => {
                             blurPopUp.style.opacity = '0'
@@ -436,15 +443,15 @@ function popupFunc(popup, type) {
                             blurPopUp.style.display = 'none'
                             popUpLoading.style.display = 'none'
                         })
-                    
-                        setTimeout(() => {
-                            labelBalance.style.color = `${type === 'transfer' ? '#D2042D' : '#32CD32'}`
-                            labelBalanceSpan.style.color = `${type === 'transfer' ? '#e52a5a' : '#9be15d'}`
-                            labelBalanceSpan.style.bottom = '-16px'
-                            labelBalanceSpan.style.opacity = '1'
-                            labelBalanceSpan.innerText = `${type === 'transfer' ? '-' + formatCur(amount, currentAccount.locale, currentAccount.currency) : '+' + formatCur(amount, currentAccount.locale, currentAccount.currency)}`
-                        }, 0)
-                  
+
+                    setTimeout(() => {
+                        labelBalance.style.color = `${type === 'transfer' ? '#D2042D' : '#32CD32'}`
+                        labelBalanceSpan.style.color = `${type === 'transfer' ? '#e52a5a' : '#9be15d'}`
+                        labelBalanceSpan.style.bottom = '-16px'
+                        labelBalanceSpan.style.opacity = '1'
+                        labelBalanceSpan.innerText = `${type === 'transfer' ? '-' + formatCur(amount, currentAccount.locale, currentAccount.currency) : '+' + formatCur(amount, currentAccount.locale, currentAccount.currency)}`
+                    }, 0)
+
 
                     delay(2000).then(() => {
                         labelBalance.style.color = '#444'
@@ -455,113 +462,130 @@ function popupFunc(popup, type) {
 
         } else {
             if (type === 'close') {
+
                 const index = accounts.findIndex(acc => acc.username === currentAccount.username)
+                delay(0)
+                    .then(() => {
+                        popUpLoading.style.display = 'flex'
+                        popUpLoading.style.opacity = '1'
+                    })
+                    .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+                        [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
 
-                // Delete Account
-                accounts.splice(index, 1)
+                        updateUI(currentAccount)
 
-                // Hide UI
-                containerApp.style.opacity = '0';
-                setTimeout(() => {
-                    containerApp.style.display = 'none';
-                }, 1000);
-                labelWelcome[0].textContent = 'Log in to get started'
-                labelWelcome[1].textContent = 'Log in to get started'
+                        delay(100)
+                            .then(() => {
+                                blurPopUp.style.opacity = '0'
+                                popUpLoading.style.opacity = '0'
+                            })
+                            .then(() => {
+                                blurPopUp.style.display = 'none'
+                                popUpLoading.style.display = 'none'
+                            })
+                    }).then(() => {
+                        // Delete Account
+                        accounts.splice(index, 1)
 
-                inputCloseUsername.value = '';
-                inputClosePin.value = '';
-            }
-        }
+                        // Hide UI
+                        containerApp.style.opacity = '0';
+                        setTimeout(() => {
+                            containerApp.style.display = 'none';
+                        }, 1000);
+                        labelWelcome[0].textContent = 'Log in to get started'
+                        labelWelcome[1].textContent = 'Log in to get started'
 
-        // AFTER CLICK RESET ALL INPUT VALUES
-
-        [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
-    }
-
-    btnConfirmTrans.addEventListener('click', confirmTrans)
-
-    // CANCEL TRANSFER
-
-    const cancelTrans = function (e) {
-        e.preventDefault()
-        popUpTransfers.style.opacity = '0'
-        blurPopUp.style.opacity = '0'
-        setTimeout(() => {
-            blurPopUp.style.display = 'none'
-        }, 0);
-
-        if (type === 'transfer') {
-            inputTransferAmount.value = ''
-            inputTransferTo.value = ''
-        } else {
-            if (type === 'loan') {
-                inputLoanAmount.value = ''
-            } else {
-                if (type === 'close') {
-                    inputCloseUsername.value = '';
-                    inputClosePin.value = '';
+                        inputCloseUsername.value = '';
+                        inputClosePin.value = '';
+                    }))
                 }
             }
         }
-    }
 
-    btnCancelTrans.addEventListener('click', cancelTrans)
+        btnConfirmTrans.addEventListener('click', confirmTrans)
 
-    // POPUP STYLES
+        // CANCEL TRANSFER
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    blurPopUp.style.display = 'block'
-    setTimeout(() => {
-        blurPopUp.style.opacity = '1'
-    }, 0);
-    if (popup === popUpError) {
-        popup.style.display = 'flex';
-        popup.style.opacity = '1'
-        popup.style.top = '24px'
+        const cancelTrans = function (e) {
+            e.preventDefault()
+            popUpTransfers.style.opacity = '0'
+            blurPopUp.style.opacity = '0'
+            setTimeout(() => {
+                blurPopUp.style.display = 'none'
+            }, 0);
 
-        delay(2000)
-            .then(() => {
-                popup.style.top = '-120px'
-                popup.style.opacity = '0'
-                blurPopUp.style.opacity = '0'
-            })
-            .then(() => delay(400)
-                .then(() => {
-                    blurPopUp.style.display = 'none'
-                    popup.style.display = 'none'
-                }))
+            if (type === 'transfer') {
+                inputTransferAmount.value = ''
+                inputTransferTo.value = ''
+            } else {
+                if (type === 'loan') {
+                    inputLoanAmount.value = ''
+                } else {
+                    if (type === 'close') {
+                        inputCloseUsername.value = '';
+                        inputClosePin.value = '';
+                    }
+                }
+            }
+        }
 
+        btnCancelTrans.addEventListener('click', cancelTrans)
 
-    } else {
-        popup.style.display = 'flex'
+        // POPUP STYLES
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        blurPopUp.style.display = 'block'
         setTimeout(() => {
-            popup.style.opacity = '1'
+            blurPopUp.style.opacity = '1'
         }, 0);
+        if (popup === popUpError) {
+            popup.style.display = 'flex';
+            popup.style.opacity = '1'
+            popup.style.top = '24px'
+
+            delay(2000)
+                .then(() => {
+                    popup.style.top = '-120px'
+                    popup.style.opacity = '0'
+                    blurPopUp.style.opacity = '0'
+                })
+                .then(() => delay(400)
+                    .then(() => {
+                        blurPopUp.style.display = 'none'
+                        popup.style.display = 'none'
+                    }))
+
+
+        } else {
+            popup.style.display = 'flex'
+            setTimeout(() => {
+                popup.style.opacity = '1'
+            }, 0);
+        }
     }
-}
 
 
-// SORT
+    // SORT
 
-let sorted = false;
+    let sorted = false;
 
-const sortFunc = function (e) {
-    e.preventDefault();
-    displayMovements(currentAccount, !sorted);
-    sorted = !sorted;
-}
+    const sortFunc = function (e) {
+        e.preventDefault();
+        displayMovements(currentAccount, !sorted);
+        sorted = !sorted;
+    }
 
-btnSort.addEventListener('click', sortFunc)
+    btnSort.addEventListener('click', sortFunc)
 
-// FIRST NUMBER SHOULDN'T EQUAL TO 0
+    // FIRST NUMBER SHOULDN'T EQUAL TO 0
 
-inputTransferAmount.onkeyup = function () {
-    if (this.value[0] === '0') this.value = 0;
-}
+    inputTransferAmount.onkeyup = function () {
+        if (this.value[0] === '0') this.value = 0;
+    }
 
-inputLoanAmount.onkeyup = function () {
-    if (this.value[0] === '0') this.value = 0;
-}
+    inputLoanAmount.onkeyup = function () {
+        if (this.value[0] === '0') this.value = 0;
+    }
 
 
 

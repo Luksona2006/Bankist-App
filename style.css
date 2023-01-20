@@ -160,6 +160,7 @@ nav {
 .movements__row {
   padding: 2.25rem 4rem;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
 }
@@ -171,7 +172,6 @@ nav {
   color: #fff;
   padding: 0.1rem 1rem;
   border-radius: 10rem;
-  margin-right: 2rem;
 }
 
 .movements__date {
@@ -179,6 +179,12 @@ nav {
   text-transform: uppercase;
   font-weight: 500;
   color: #666;
+}
+
+.movements__deposit-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .movements__type--deposit {
