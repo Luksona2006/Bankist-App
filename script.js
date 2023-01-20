@@ -5,7 +5,6 @@ const account1 = {
     movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
     interestRate: 1.2, // %
     pin: 1111,
-
     movementsDates: [
         '2023-01-19T01:17:12.178Z',
         '2023-01-18T07:42:02.383Z',
@@ -15,7 +14,9 @@ const account1 = {
         '2022-12-02T17:01:17.194Z',
         '2022-08-11T23:36:17.929Z',
         '2022-01-02T10:51:36.790Z'
-    ]
+    ],
+    currency: 'EUR',
+    locale: 'pt-PT'
 };
 
 const account2 = {
@@ -32,7 +33,9 @@ const account2 = {
         '2022-12-02T15:25:52.194Z',
         '2022-08-11T22:17:23.929Z',
         '2022-01-02T02:31:41.790Z'
-    ]
+    ],
+    currency: 'USD',
+    locale: 'en-US'
 };
 
 // const account3 = {
@@ -102,6 +105,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 const popUpError = document.querySelector('.popUp-error');
 const blurPopUp = document.querySelector('.blur')
 const popUpErrorText = popUpError.querySelector('p');
+const popUpLoading = document.querySelector('.popUp-loading')
 
 const popUpTransfers = document.querySelector('.popUp-transfers')
 const btnConfirmTrans = document.querySelector('#confirm');
@@ -114,29 +118,38 @@ const btnCancelTrans = document.querySelector('#cancel');
 
 // Date format
 
-const formatMovementDate = function(date) {
+const formatMovementDate = function (date) {
     const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
     const daysPassed = calcDaysPassed(new Date(), date);
 
-    if(daysPassed < 1) return 'Today'
-    if(daysPassed >= 1 && daysPassed < 2) return 'Yesterday'
-    if(daysPassed <= 6) return `${daysPassed} days ago` 
-    if(daysPassed / 7 >= 1 && daysPassed / 7 <= 4) return `${Math.round(daysPassed / 7)} ${Math.round(daysPassed / 7) === 1 ? 'week' : 'weeks'} ago`
-    if(daysPassed / 30 >= 1 && daysPassed / 30 <= 12 || daysPassed / 31 >= 1 && daysPassed / 31 <= 12) {
-        if(daysPassed / 30 >= 1 && daysPassed / 30 <= 12) {
-            return `${Math.round(daysPassed / 30)} ${Math.round(daysPassed / 30) === 1 ? 'month' : 'months'} ago` 
+    if (daysPassed < 1) return 'Today'
+    if (daysPassed >= 1 && daysPassed < 2) return 'Yesterday'
+    if (daysPassed <= 6) return `${daysPassed} days ago`
+    if (daysPassed / 7 >= 1 && daysPassed / 7 <= 4) return `${Math.round(daysPassed / 7)} ${Math.round(daysPassed / 7) === 1 ? 'week' : 'weeks'} ago`
+    if (daysPassed / 30 >= 1 && daysPassed / 30 <= 12 || daysPassed / 31 >= 1 && daysPassed / 31 <= 12) {
+        if (daysPassed / 30 >= 1 && daysPassed / 30 <= 12) {
+            return `${Math.round(daysPassed / 30)} ${Math.round(daysPassed / 30) === 1 ? 'month' : 'months'} ago`
         } else {
-            return `${Math.round(daysPassed / 31)} ${Math.round(daysPassed / 31) === 1 ? 'month' : 'months'} ago` 
+            return `${Math.round(daysPassed / 31)} ${Math.round(daysPassed / 31) === 1 ? 'month' : 'months'} ago`
         }
     }
-    if(daysPassed >= 365) {
-        const day = `${date.getDate()}`.padStart(2,0);
-        const month = `${date.getMonth() + 1}`.padStart(2,0)
+    if (daysPassed >= 365) {
+        const day = `${date.getDate()}`.padStart(2, 0);
+        const month = `${date.getMonth() + 1}`.padStart(2, 0)
         const year = date.getFullYear();
         return `${day}/${month}/${year}`
     }
 
+}
+
+// Formatting currencies
+
+const formatCur = function (value, locale, currency) {
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currency
+    }).format(value)
 }
 
 // Add movements divs
@@ -144,18 +157,20 @@ const formatMovementDate = function(date) {
 const displayMovements = function (account, sort = false) {
     containerMovements.innerHTML = ''
 
-    const movs = sort ? account.movements.slice().sort((a , b) => a - b) : account.movements; 
+    const movs = sort ? account.movements.slice().sort((a, b) => a - b) : account.movements;
 
     movs.forEach((mov, i) => {
         const movType = mov > 0 ? 'deposit' : 'withdrawal'
-        const date = new Date(account.movementsDates[i]) 
+        const date = new Date(account.movementsDates[i])
         const displayDate = formatMovementDate(date)
+
+        const formattedMov = formatCur(mov, account.locale, account.currency)
 
         const movHtml = `
         <div class="movements__row">
           <div class="movements__type movements__type--${movType}">${i + 1} ${movType}</div>
           <div class="movemenets__date">${displayDate}</div>
-          <div class="movements__value">${mov.toFixed(2)}€</div>
+          <div class="movements__value">${formattedMov}</div>
         </div>
         `;
 
@@ -167,7 +182,8 @@ const displayMovements = function (account, sort = false) {
 
 const calcDisplayBalance = function (account) {
     account.balance = account.movements.reduce((acc, cur) => acc + cur, 0)
-    labelBalance.textContent = `${account.balance.toFixed(2)}€`
+    const formattedMov = formatCur(account.balance, account.locale, account.currency)
+    labelBalance.textContent = `${formattedMov}`
 }
 
 // 
@@ -177,9 +193,9 @@ const calcDisplaySummary = function (account) {
     const withdrawals = Math.abs(account.movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0));
     const interest = account.movements.filter(mov => mov > 0).map(deposit => (deposit * account.interestRate) / 100).filter(int => int >= 1).reduce((acc, int) => acc + int, 0);
 
-    labelSumIn.textContent = `${incomes.toFixed(2)}€`
-    labelSumOut.textContent = `${withdrawals.toFixed(2)}€`
-    labelSumInterest.textContent = `${interest.toFixed(2)}€`
+    labelSumIn.textContent = formatCur(incomes, account.locale, account.currency)
+    labelSumOut.textContent = formatCur(Math.abs(withdrawals), account.locale, account.currency)
+    labelSumInterest.textContent = formatCur(interest, account.locale, account.currency)
 }
 
 
@@ -199,12 +215,45 @@ const updateUI = function (acc) {
     calcDisplaySummary(acc)
 }
 
+// LogOut Timer
+
+const startLogOutTimer = function() {
+    let time = 600;
+    const clock = function () {
+        const min = String(Math.trunc(time / 60)).padStart(2,0);
+        const seconds = String(Math.trunc(time % 60)).padStart(2,0);
+
+        labelTimer.textContent = `${min}:${seconds}`;
+        if(time === 0) {
+            clearInterval(timer)
+            labelWelcome.textContent = 'Log in to get started'
+            containerApp.style.opacity = '0'
+            setTimeout(() => {
+                containerApp.style.display = 'none'
+            }, 1000)
+        }
+
+        if(time === 30) {
+            labelTimer.style.color = 'red'
+        }
+
+        time--;
+    }
+
+    clock()
+    const timer = setInterval(clock, 1000)
+    return timer;
+}
+
 // Event handlers
 
-let currentAccount;
+let currentAccount, timer;
 
 const logInfunc = function (e) {
     e.preventDefault()
+    if(timer) clearInterval(timer)
+
+    timer = startLogOutTimer()
     currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
     if (currentAccount?.pin === +inputLoginPin.value) {
         labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
@@ -217,11 +266,11 @@ const logInfunc = function (e) {
         // Create current date and time
 
         const currentDate = new Date()
-        const day = `${currentDate.getDate()}`.padStart(2,0);
-        const month = `${currentDate.getMonth() + 1}`.padStart(2,0);
+        const day = `${currentDate.getDate()}`.padStart(2, 0);
+        const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
         const year = currentDate.getFullYear();
         const hour = currentDate.getHours();
-        const min = `${currentDate.getMinutes()}`.padStart(2,0);
+        const min = `${currentDate.getMinutes()}`.padStart(2, 0);
 
         labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
@@ -337,85 +386,96 @@ const delay = ms => {
 
 function popupFunc(popup, type) {
 
-    // CONFIRM TRANSFER || LOAN || CLOSE ACC
+    // Reset timer
+    clearInterval(timer)
+    timer = startLogOutTimer();
+    
 
+    // CONFIRM && CANCEL TRANSFER || LOAN || CLOSE ACC
     const confirmTrans = function (e) {
         e.preventDefault()
+
         popUpTransfers.style.opacity = '0'
-        blurPopUp.style.opacity = '0'
         setTimeout(() => {
-            blurPopUp.style.display = 'none'
             popUpTransfers.style.display = 'none'
         }, 0);
 
-        if (type === 'transfer') {
-            const amount = +inputTransferAmount.value;
-            const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
 
-            if(amount !== 0) {
-                currentAccount.movements.push(-amount)
+        if (type === 'transfer' || type === 'loan') {
+            currentAccount.movementsDates.push(new Date().toISOString())
+            const amountFunc = () => type === 'transfer' ? +inputTransferAmount.value : +inputLoanAmount.value;
+            const amount = amountFunc();
+
+            if (type === 'transfer') {
+                const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
                 recieverAcc.movements.push(amount)
-
-                currentAccount.movementsDates.push(new Date().toISOString())
                 recieverAcc.movementsDates.push(new Date().toISOString())
-                updateUI(currentAccount)
-    
-                
-                labelBalance.style.color = '#D2042D'
-                labelBalanceSpan.style.color = '#e52a5a'
-                labelBalanceSpan.style.bottom = '-16px'
-                labelBalanceSpan.style.opacity = '1'
-                labelBalanceSpan.textContent = `-${amount.toFixed(2)}€`
-    
-                setTimeout(() => {
-                    labelBalance.style.color = '#444'
-                    labelBalanceSpan.style.bottom = '-36px'
-                    labelBalanceSpan.style.opacity = '0'
-                }, 4000);
             }
 
-            inputTransferAmount.value = ''
-            inputTransferTo.value = ''
-        } else {
-            if (type === 'loan') {
-                const amount = +inputLoanAmount.value;
+            currentAccount.movements.push(type === 'transfer' ? -amount : amount);
 
-                if(amount !== 0) {
-                    currentAccount.movements.push(amount);
-                    currentAccount.movementsDates.push(new Date().toISOString())
-                    updateUI(currentAccount);
+            if (labelBalanceSpan.style.bottom == '-16px') {
+                labelBalance.style.color = '#444'
+                labelBalanceSpan.style.opacity = '0'
+                labelBalanceSpan.style.bottom = '-36px'
+            }
 
-                    labelBalance.style.color = '#32CD32'
-                    labelBalanceSpan.style.color = '#9be15d'
-                    labelBalanceSpan.style.bottom = '-16px'
-                    labelBalanceSpan.style.opacity = '1'
-                    labelBalanceSpan.textContent = `+${amount.toFixed(2)}€`
-    
-                    setTimeout(() => {
+            delay(0)
+                .then(() => {
+                    popUpLoading.style.display = 'flex'
+                    popUpLoading.style.opacity = '1'
+                })
+                .then(() => delay(4000).then(() => {
+                    updateUI(currentAccount)
+                    delay(100)
+                        .then(() => {
+                            blurPopUp.style.opacity = '0'
+                            popUpLoading.style.opacity = '0'
+                        })
+                        .then(() => {
+                            blurPopUp.style.display = 'none'
+                            popUpLoading.style.display = 'none'
+                        })
+                    
+                        setTimeout(() => {
+                            labelBalance.style.color = `${type === 'transfer' ? '#D2042D' : '#32CD32'}`
+                            labelBalanceSpan.style.color = `${type === 'transfer' ? '#e52a5a' : '#9be15d'}`
+                            labelBalanceSpan.style.bottom = '-16px'
+                            labelBalanceSpan.style.opacity = '1'
+                            labelBalanceSpan.innerText = `${type === 'transfer' ? '-' + formatCur(amount, currentAccount.locale, currentAccount.currency) : '+' + formatCur(amount, currentAccount.locale, currentAccount.currency)}`
+                        }, 0)
+                  
+
+                    delay(2000).then(() => {
                         labelBalance.style.color = '#444'
                         labelBalanceSpan.style.bottom = '-36px'
                         labelBalanceSpan.style.opacity = '0'
-                    }, 4000);
-                }
+                    })
+                }))
 
-                inputLoanAmount.value = ''
-            } else {
-                if (type === 'close') {
-                    const index = accounts.findIndex(acc => acc.username === currentAccount.username)
+        } else {
+            if (type === 'close') {
+                const index = accounts.findIndex(acc => acc.username === currentAccount.username)
 
-                    // Delete Account
-                    accounts.splice(index, 1)
+                // Delete Account
+                accounts.splice(index, 1)
 
-                    // Hide UI
-                    containerApp.style.opacity = '0';
-                    labelWelcome[0].textContent = 'Log in to get started'
-                    labelWelcome[1].textContent = 'Log in to get started'
+                // Hide UI
+                containerApp.style.opacity = '0';
+                setTimeout(() => {
+                    containerApp.style.display = 'none';
+                }, 1000);
+                labelWelcome[0].textContent = 'Log in to get started'
+                labelWelcome[1].textContent = 'Log in to get started'
 
-                    inputCloseUsername.value = '';
-                    inputClosePin.value = '';
-                }
+                inputCloseUsername.value = '';
+                inputClosePin.value = '';
             }
         }
+
+        // AFTER CLICK RESET ALL INPUT VALUES
+
+        [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
     }
 
     btnConfirmTrans.addEventListener('click', confirmTrans)
@@ -443,7 +503,6 @@ function popupFunc(popup, type) {
                 }
             }
         }
-
     }
 
     btnCancelTrans.addEventListener('click', cancelTrans)
@@ -470,7 +529,7 @@ function popupFunc(popup, type) {
                 .then(() => {
                     blurPopUp.style.display = 'none'
                     popup.style.display = 'none'
-            }))
+                }))
 
 
     } else {
@@ -486,9 +545,9 @@ function popupFunc(popup, type) {
 
 let sorted = false;
 
-const sortFunc = function(e) {
+const sortFunc = function (e) {
     e.preventDefault();
-    displayMovements(currentAccount.movements, !sorted);
+    displayMovements(currentAccount, !sorted);
     sorted = !sorted;
 }
 
@@ -496,12 +555,12 @@ btnSort.addEventListener('click', sortFunc)
 
 // FIRST NUMBER SHOULDN'T EQUAL TO 0
 
-inputTransferAmount.onkeyup = function() {
-    if(this.value[0] === '0') this.value = 0;
+inputTransferAmount.onkeyup = function () {
+    if (this.value[0] === '0') this.value = 0;
 }
 
-inputLoanAmount.onkeyup = function() {
-    if(this.value[0] === '0') this.value = 0;
+inputLoanAmount.onkeyup = function () {
+    if (this.value[0] === '0') this.value = 0;
 }
 
 

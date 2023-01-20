@@ -352,7 +352,7 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.438);
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 10;
   display: none;
   opacity: 0;
@@ -428,6 +428,39 @@ h2 {
   font-weight: 500;
 }
 
+.popUp-loading {
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 110;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transition: 0.4s all;
+}
+
+.popUp-loading p{
+  color: #F5F5F5;
+  font-size: 28px;
+}
+
+.loading {
+  animation: loading 2s infinite;
+}
+
+@keyframes loading {
+  0% {
+    rotate: 0;
+    transform: rotate(0);
+  }
+
+  100% {
+    rotate: 360deg;
+    transform: rotate(360deg);
+  }
+}
 @media(max-width: 830px) {
   .app {
     display: flex;
