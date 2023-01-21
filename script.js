@@ -114,7 +114,7 @@ const accounts = [
 
 /////////////////////////////////////////////////
 // Elements
-const labelWelcome = document.querySelectorAll('.welcome');
+const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalanceSpan = document.querySelector('.balance__value-div').querySelector('span');
 const labelBalance = document.querySelector('.balance__value');
@@ -407,8 +407,7 @@ const logInfunc = function (e) {
                             blurPopUp.style.display = 'none'
                         }, 500);
                     }).then(() => {
-                        labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-                        labelWelcome[1].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+                        labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
                         containerApp.style.display = 'grid';
                         containerApp.style.opacity = '1'
 
@@ -643,8 +642,7 @@ function popupFunc(popup, type) {
                         setTimeout(() => {
                             containerApp.style.display = 'none';
                         }, 1000);
-                        labelWelcome[0].textContent = 'Log in to get started'
-                        labelWelcome[1].textContent = 'Log in to get started'
+                        labelWelcome.textContent = 'Log in to get started'
 
                         [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
                     }))
@@ -785,8 +783,7 @@ btnLogOut.addEventListener('click', function (e) {
             containerApp.style.opacity = '0';
             blurPopUp.style.opacity = '0';
             containerApp.style.display = 'none';
-            labelWelcome[0].textContent = 'Log in to get started'
-            labelWelcome[1].textContent = 'Log in to get started'
+            labelWelcome.textContent = 'Log in to get started'
             btnLoginIcon.style.display = 'flex'
             btnLogOut.style.display = 'none'
             delay(100).then(() => {
