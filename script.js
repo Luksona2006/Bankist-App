@@ -72,7 +72,45 @@ const account2 = {
 //     ]
 // }
 
-const accounts = [account1, account2];
+const accounts = [
+    {
+        owner: 'Jessica Davis',
+        movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+        interestRate: 1.5,
+        pin: 2222,
+        movementsDates: [
+            '2023-01-19T00:11:53.178Z',
+            '2023-01-02T12:21:34.383Z',
+            '2023-01-08T02:35:52.904Z',
+            '2023-02-28T09:12:11.185Z',
+            '2022-12-24T19:14:34.604Z',
+            '2022-12-02T15:25:52.194Z',
+            '2022-08-11T22:17:23.929Z',
+            '2022-01-02T02:31:41.790Z'
+        ],
+        currency: 'USD',
+        locale: 'en-US'
+    },
+
+    {
+        owner: 'Jonas Schmedtmann',
+        movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+        interestRate: 1.2, // %
+        pin: 1111,
+        movementsDates: [
+            '2023-01-19T01:17:12.178Z',
+            '2023-01-18T07:42:02.383Z',
+            '2023-01-12T09:15:04.904Z',
+            '2023-01-01T10:17:24.185Z',
+            '2022-12-24T14:11:59.604Z',
+            '2022-12-02T17:01:17.194Z',
+            '2022-08-11T23:36:17.929Z',
+            '2022-01-02T10:51:36.790Z'
+        ],
+        currency: 'EUR',
+        locale: 'pt-PT'
+    }
+];
 
 /////////////////////////////////////////////////
 // Elements
@@ -112,12 +150,107 @@ const btnConfirmTrans = document.querySelector('#confirm');
 const popUpTransferText = document.querySelector('.transfer__text')
 const btnCancelTrans = document.querySelector('#cancel');
 const btnLoginIcon = document.querySelector('.login__icon')
+const btnLogOut = document.querySelector('.logOut__btn')
 const loginPopUp = document.querySelector('.login')
-const loginPopUpHide = document.querySelector('.login__hide')
+const registerBtn = document.querySelector('.register__btn')
 
+const registerPopUp = document.querySelector('.register')
+const registerName = document.querySelector('.register__input--name');
+const registerSurname = document.querySelector('.register__input--surname');
+const registerPin = document.querySelector('.register__input--pin');
+const registerCurrency = document.querySelector('.register__input--currency');
+const registerLocale = document.querySelector('.register__input--locale');
+const createAccount = document.querySelector('.create__btn')
+const popUpHide = document.querySelectorAll('.popUp__hide')
 
 /////////////////////////////////////////////////
 // Functions
+
+// Create user names 
+
+const createUserNames = function (accounts) {
+    accounts.forEach(element => element.username = element.owner.toLowerCase().split(' ').map(name => name[0]).join(''))
+};
+
+createUserNames(accounts)
+
+
+const createAccountFunc = function (e) {
+    e.preventDefault();
+    let register = true;
+    [registerName, registerSurname, registerPin, registerCurrency, registerLocale].forEach(element => {
+        if (element.value === '') {
+            element.style.border = '1px solid #e52a5a'
+            element.parentElement.querySelector('label').style.color = '#e52a5a'
+            element.parentElement.querySelector('div').querySelector('span').textContent = 'Can\'t be empty'
+            element.parentElement.querySelector('div').querySelector('span').style.display = 'block'
+            element.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
+            register = false;
+        } else {
+            element.style.border = '1px solid rgba(0, 0, 0, 0.281)'
+            element.parentElement.querySelector('div').querySelector('label').style.color = '#444'
+            element.parentElement.querySelector('div').querySelector('span').style.opacity = '0'
+            element.parentElement.querySelector('div').querySelector('span').style.display = 'none'
+        }
+    });
+
+    [registerName, registerSurname, registerCurrency, registerLocale].forEach(element => {
+        if (/\d+/.test(element.value)) {
+            element.style.border = '1px solid #e52a5a'
+            element.parentElement.querySelector('label').style.color = '#e52a5a'
+            element.parentElement.querySelector('div').querySelector('span').textContent = 'Without numbers'
+            element.parentElement.querySelector('div').querySelector('span').style.display = 'block'
+            element.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
+            register = false;
+        }
+    })
+
+
+    if (registerPin.value.length < 4 && registerPin.value.length > 0 || /[a-z]+/.test(registerPin.value)) {
+        registerPin.style.border = '1px solid #e52a5a'
+        registerPin.parentElement.querySelector('div').querySelector('label').style.color = '#e52a5a'
+        registerPin.parentElement.querySelector('div').querySelector('span').textContent = 'Only numbers (4)'
+        registerPin.parentElement.querySelector('div').querySelector('span').style.display = 'block'
+        registerPin.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
+        register = false;
+    }
+
+    if (register) {
+        accounts.push({
+            owner: `${registerName.value[0].toUpperCase() + registerName.value.slice(1)} ${registerSurname.value[0].toUpperCase() + registerSurname.value.slice(1)}`,
+            movements: [Math.floor(Math.random() * 600) + 150],
+            interestRate: 1.05, // %
+            pin: +registerPin.value,
+            movementsDates: [new Date().toISOString()],
+            currency: `${registerCurrency.value}`,
+            locale: `${registerLocale.value}`
+        })
+
+        createUserNames(accounts)
+
+        registerPopUp.style.opacity = '0'
+        registerPopUp.style.top = '-50%'
+
+        delay(0)
+            .then(() => {
+                popUpLoading.style.display = 'flex'
+                popUpLoading.style.opacity = '1'
+            })
+            .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+                popUpLoading.style.opacity = '0'
+                blurPopUp.style.opacity = '0'
+                delay(100).then(() => {
+                    blurPopUp.style.display = 'none'
+                    popUpLoading.style.display = 'none'
+                })
+            }
+            ))
+    }
+
+
+}
+
+createAccount.addEventListener('click', createAccountFunc)
 
 // Date format
 
@@ -203,15 +336,6 @@ const calcDisplaySummary = function (account) {
     labelSumInterest.textContent = formatCur(interest, account.locale, account.currency)
 }
 
-
-// Create user names 
-
-const createUserNames = function (accounts) {
-    accounts.forEach(element => element.username = element.owner.toLowerCase().split(' ').map(name => name[0]).join(''))
-};
-
-createUserNames(accounts)
-
 // Update UI
 
 const updateUI = function (acc) {
@@ -266,45 +390,49 @@ const logInfunc = function (e) {
         loginPopUp.style.top = '-50%'
 
         delay(0)
-        .then(() => {
-            popUpLoading.style.display = 'flex'
-            popUpLoading.style.opacity = '1'
-        })
-        .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
-            popUpLoading.style.opacity = '0'
-            delay(400).then(() => popUpLoading.style.display = 'none')
             .then(() => {
-                blurPopUp.style.opacity = '0'
-                setTimeout(() => {
-                    blurPopUp.style.display = 'none'
-                }, 500);
-            }).then(() => {
-                labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-                labelWelcome[1].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-                containerApp.style.display = 'grid';
-                containerApp.style.opacity = '1'
-    
-        
-                // Create current date and time
-        
-                const currentDate = new Date()
-                const day = `${currentDate.getDate()}`.padStart(2, 0);
-                const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
-                const year = currentDate.getFullYear();
-                const hour = currentDate.getHours();
-                const min = `${currentDate.getMinutes()}`.padStart(2, 0);
-        
-                labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-        
-                inputLoginUsername.value = '';
-                inputLoginPin.value = '';
-        
-                inputLoginUsername.blur();
-                inputLoginPin.blur();
-        
-                updateUI(currentAccount)
+                popUpLoading.style.display = 'flex'
+                popUpLoading.style.opacity = '1'
             })
-        }))
+            .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+                popUpLoading.style.opacity = '0'
+                delay(100).then(() => {
+                    popUpLoading.style.display = 'none'
+                    btnLoginIcon.style.display = 'none'
+                    btnLogOut.style.display = 'flex'
+                })
+                    .then(() => {
+                        blurPopUp.style.opacity = '0'
+                        setTimeout(() => {
+                            blurPopUp.style.display = 'none'
+                        }, 500);
+                    }).then(() => {
+                        labelWelcome[0].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+                        labelWelcome[1].textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+                        containerApp.style.display = 'grid';
+                        containerApp.style.opacity = '1'
+
+
+                        // Create current date and time
+
+                        const currentDate = new Date()
+                        const day = `${currentDate.getDate()}`.padStart(2, 0);
+                        const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
+                        const year = currentDate.getFullYear();
+                        const hour = currentDate.getHours();
+                        const min = `${currentDate.getMinutes()}`.padStart(2, 0);
+
+                        labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+
+                        inputLoginUsername.value = '';
+                        inputLoginPin.value = '';
+
+                        inputLoginUsername.blur();
+                        inputLoginPin.blur();
+
+                        updateUI(currentAccount)
+                    })
+            }))
     } else {
         if (!currentAccount) {
             popUpErrorText.innerText = 'WRONG USER'
@@ -518,8 +646,7 @@ function popupFunc(popup, type) {
                         labelWelcome[0].textContent = 'Log in to get started'
                         labelWelcome[1].textContent = 'Log in to get started'
 
-                        inputCloseUsername.value = '';
-                        inputClosePin.value = '';
+                        [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
                     }))
             }
         }
@@ -562,7 +689,6 @@ function popupFunc(popup, type) {
         blurPopUp.style.opacity = '1'
     }, 0);
     if (popup === popUpError) {
-        popup.style.display = 'flex';
         popup.style.opacity = '1'
         popup.style.top = '24px'
 
@@ -570,13 +696,7 @@ function popupFunc(popup, type) {
             .then(() => {
                 popup.style.top = '-120px'
                 popup.style.opacity = '0'
-                blurPopUp.style.opacity = '0'
             })
-            .then(() => delay(500)
-                .then(() => {
-                    blurPopUp.style.display = 'none'
-                    popup.style.display = 'none'
-                }))
 
 
     } else {
@@ -612,8 +732,11 @@ inputLoanAmount.onkeyup = function () {
 }
 
 
-btnLoginIcon.addEventListener('click', function(e) {
+btnLoginIcon.addEventListener('click', function (e) {
     e.preventDefault();
+    registerPopUp.style.opacity = '0'
+    registerPopUp.style.top = '-50%'
+
     loginPopUp.style.opacity = '1'
     loginPopUp.style.top = '50%'
 
@@ -623,19 +746,56 @@ btnLoginIcon.addEventListener('click', function(e) {
     }, 0);
 })
 
-loginPopUpHide.addEventListener('click', function(e) {
+popUpHide.forEach(element => {
+    element.addEventListener('click', function (e) {
+        e.preventDefault();
+        loginPopUp.style.opacity = '0'
+        loginPopUp.style.top = '-50%'
+
+        registerPopUp.style.opacity = '0'
+        registerPopUp.style.top = '-50%'
+
+        blurPopUp.style.opacity = '0'
+        setTimeout(() => {
+            blurPopUp.style.display = 'none'
+        }, 500);
+    })
+})
+
+registerBtn.addEventListener('click', function (e) {
     e.preventDefault();
     loginPopUp.style.opacity = '0'
     loginPopUp.style.top = '-50%'
 
-    blurPopUp.style.opacity = '0'
-    setTimeout(() => {
-        blurPopUp.style.display = 'none'
-    }, 500);
+    registerPopUp.style.opacity = '1'
+    registerPopUp.style.top = '50%'
 })
 
-
-
+btnLogOut.addEventListener('click', function (e) {
+    e.preventDefault();
+    blurPopUp.style.display = 'block';
+    delay(0)
+        .then(() => {
+            blurPopUp.style.opacity = '1';
+            popUpLoading.style.display = 'flex'
+            popUpLoading.style.opacity = '1'
+        })
+        .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+            popUpLoading.style.opacity = '0'
+            containerApp.style.opacity = '0';
+            blurPopUp.style.opacity = '0';
+            containerApp.style.display = 'none';
+            labelWelcome[0].textContent = 'Log in to get started'
+            labelWelcome[1].textContent = 'Log in to get started'
+            btnLoginIcon.style.display = 'flex'
+            btnLogOut.style.display = 'none'
+            delay(100).then(() => {
+                popUpLoading.style.display = 'none'
+                blurPopUp.stlye.display = 'none'
+            })
+        }))
+    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+})
 
 
 

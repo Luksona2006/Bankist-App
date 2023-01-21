@@ -65,7 +65,7 @@ nav {
   height: 5.25rem;
 }
 
-.login {
+.login, .register {
   max-width: 660px;
   width: 100%;
   padding: 0 20px;
@@ -79,7 +79,7 @@ nav {
   z-index: 100;
 }
 
-.login__icon {
+.login__icon, .logOut__btn {
   max-width: 140px;
   width: 100%;
   background-color: #333;
@@ -94,6 +94,15 @@ nav {
   color: #f5f5f5;
   padding: 4px 8px;
   border-radius: 8px;
+  transition: 0.5s all;
+}
+
+.logOut__btn {
+  display: none;
+}
+
+.login__icon:hover {
+  transform: scale(1.05);
 }
 
 .form__wrapper{
@@ -101,27 +110,46 @@ nav {
   background-color: #F5F5F5;
   border-radius: 8px;
   padding: 80px 32px 32px 32px;
+  display: flex;
+  flex-direction: column;
 }
 
-.login__hide {
+.popUp__hide {
   cursor: pointer;
   position: absolute;
   top: 20px;
   left: 12px;
 }
+
 .form__wrapper button {
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
 }
 
-.form__wrapper div {
+.form__input__div  {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  gap: 4px;
+  align-items: flex-start;
+  margin-bottom: 12px;
 }
 
-.login label {
+.form__input__div  div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form__input__div div span {
+  color: #e52a5a;
+  display: none;
+  opacity: 0;
+}
+
+.login, .register label {
   font-size: 16px;
 }
 
@@ -148,14 +176,19 @@ nav {
 .login__btn {
   width: 100%;
   border: none;
-  background: none;
+  display: flex;
+  align-items: center;
+  background-color: #1F51FF;
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: #F5F5F5;
+  gap: 4px;
   font-size: 2.2rem;
-  color: inherit;
   cursor: pointer;
   transition: all 0.3s;
 }
 
-.register__btn {
+.register__btn, .create__btn {
   width: 70%;
   margin: 0 auto;
   background-color: #9be15d;
@@ -164,21 +197,20 @@ nav {
   color: #F5F5F5;
   cursor: pointer;
   border: none;
+  border-radius: 4px;
   transition: all 0.4s;
 }
 
-.register__btn:hover {
-  border-radius: 12px;
-  transform: translateY(-8px);
+.create__btn, .login__btn {
+  margin-top: 20px;
 }
 
-.login__btn:hover,
-.login__btn:focus,
-.btn--sort:hover,
-.btn--sort:focus {
-  outline: none;
-  color: #777;
+
+.register__btn:hover, .login__btn:hover, .create__btn:hover {
+  border-radius: 12px;
+  transform: scale(1.05);
 }
+
 
 /* MAIN */
 .app {
