@@ -1,42 +1,42 @@
 'use strict'
 
-const account1 = {
-    owner: 'Jonas Schmedtmann',
-    movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-    interestRate: 1.2, // %
-    pin: 1111,
-    movementsDates: [
-        '2023-01-19T01:17:12.178Z',
-        '2023-01-18T07:42:02.383Z',
-        '2023-01-12T09:15:04.904Z',
-        '2023-01-01T10:17:24.185Z',
-        '2022-12-24T14:11:59.604Z',
-        '2022-12-02T17:01:17.194Z',
-        '2022-08-11T23:36:17.929Z',
-        '2022-01-02T10:51:36.790Z'
-    ],
-    currency: 'EUR',
-    locale: 'pt-PT'
-};
+// const account1 = {
+//     owner: 'Jonas Schmedtmann',
+//     movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+//     interestRate: 1.2, // %
+//     pin: 1111,
+//     movementsDates: [
+//         '2023-01-19T01:17:12.178Z',
+//         '2023-01-18T07:42:02.383Z',
+//         '2023-01-12T09:15:04.904Z',
+//         '2023-01-01T10:17:24.185Z',
+//         '2022-12-24T14:11:59.604Z',
+//         '2022-12-02T17:01:17.194Z',
+//         '2022-08-11T23:36:17.929Z',
+//         '2022-01-02T10:51:36.790Z'
+//     ],
+//     currency: 'EUR',
+//     locale: 'pt-PT'
+// };
 
-const account2 = {
-    owner: 'Jessica Davis',
-    movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-    interestRate: 1.5,
-    pin: 2222,
-    movementsDates: [
-        '2023-01-19T00:11:53.178Z',
-        '2023-01-02T12:21:34.383Z',
-        '2023-01-08T02:35:52.904Z',
-        '2023-02-28T09:12:11.185Z',
-        '2022-12-24T19:14:34.604Z',
-        '2022-12-02T15:25:52.194Z',
-        '2022-08-11T22:17:23.929Z',
-        '2022-01-02T02:31:41.790Z'
-    ],
-    currency: 'USD',
-    locale: 'en-US'
-};
+// const account2 = {
+//     owner: 'Jessica Davis',
+//     movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+//     interestRate: 1.5,
+//     pin: 2222,
+//     movementsDates: [
+//         '2023-01-19T00:11:53.178Z',
+//         '2023-01-02T12:21:34.383Z',
+//         '2023-01-08T02:35:52.904Z',
+//         '2023-02-28T09:12:11.185Z',
+//         '2022-12-24T19:14:34.604Z',
+//         '2022-12-02T15:25:52.194Z',
+//         '2022-08-11T22:17:23.929Z',
+//         '2022-01-02T02:31:41.790Z'
+//     ],
+//     currency: 'USD',
+//     locale: 'en-US'
+// };
 
 // const account3 = {
 //     owner: 'Steven Thomas Williams',
@@ -74,6 +74,24 @@ const account2 = {
 
 const accounts = [
     {
+        owner: 'Jonas Schmedtmann',
+        movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+        interestRate: 1.2, // %
+        pin: 1111,
+        movementsDates: [
+            '2023-01-19T01:17:12.178Z',
+            '2023-01-18T07:42:02.383Z',
+            '2023-01-12T09:15:04.904Z',
+            '2023-01-01T10:17:24.185Z',
+            '2022-12-25T14:11:59.604Z',
+            '2022-12-02T17:01:17.194Z',
+            '2022-08-11T23:36:17.929Z',
+            '2022-01-02T10:51:36.790Z'
+        ],
+        currency: 'EUR',
+        locale: 'pt-PT'
+    },
+    {
         owner: 'Jessica Davis',
         movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
         interestRate: 1.5,
@@ -90,25 +108,6 @@ const accounts = [
         ],
         currency: 'USD',
         locale: 'en-US'
-    },
-
-    {
-        owner: 'Jonas Schmedtmann',
-        movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-        interestRate: 1.2, // %
-        pin: 1111,
-        movementsDates: [
-            '2023-01-19T01:17:12.178Z',
-            '2023-01-18T07:42:02.383Z',
-            '2023-01-12T09:15:04.904Z',
-            '2023-01-01T10:17:24.185Z',
-            '2022-12-24T14:11:59.604Z',
-            '2022-12-02T17:01:17.194Z',
-            '2022-08-11T23:36:17.929Z',
-            '2022-01-02T10:51:36.790Z'
-        ],
-        currency: 'EUR',
-        locale: 'pt-PT'
     }
 ];
 
@@ -263,13 +262,7 @@ const formatMovementDate = function (date) {
     if (daysPassed >= 1 && daysPassed < 2) return 'Yesterday'
     if (daysPassed <= 6) return `${daysPassed} days ago`
     if (daysPassed / 7 >= 1 && daysPassed / 7 <= 4) return `${Math.round(daysPassed / 7)} ${Math.round(daysPassed / 7) === 1 ? 'week' : 'weeks'} ago`
-    if (daysPassed / 30 >= 1 && daysPassed / 30 <= 12 || daysPassed / 31 >= 1 && daysPassed / 31 <= 12) {
-        if (daysPassed / 30 >= 1 && daysPassed / 30 <= 12) {
-            return `${Math.round(daysPassed / 30)} ${Math.round(daysPassed / 30) === 1 ? 'month' : 'months'} ago`
-        } else {
-            return `${Math.round(daysPassed / 31)} ${Math.round(daysPassed / 31) === 1 ? 'month' : 'months'} ago`
-        }
-    }
+    if (daysPassed / 30 >= 1 && daysPassed / 30 <= 12) return `${Math.round(daysPassed / 30)} ${Math.round(daysPassed / 30) === 1 ? 'month' : 'months'} ago`
     if (daysPassed >= 365) {
         const day = `${date.getDate()}`.padStart(2, 0);
         const month = `${date.getMonth() + 1}`.padStart(2, 0)
