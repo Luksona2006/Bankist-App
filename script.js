@@ -380,9 +380,6 @@ let currentAccount, timer;
 
 const logInfunc = function (e) {
     e.preventDefault()
-    if (timer) clearInterval(timer)
-
-    timer = startLogOutTimer()
     currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
     if (currentAccount?.pin === +inputLoginPin.value) {
 
@@ -394,12 +391,14 @@ const logInfunc = function (e) {
                 popUpLoading.style.display = 'flex'
                 popUpLoading.style.opacity = '1'
             })
-            .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+            .then(() => delay(Math.floor(Math.random() * 4000) + 2000).then(() => {
                 popUpLoading.style.opacity = '0'
                 delay(100).then(() => {
                     popUpLoading.style.display = 'none'
                     btnLoginIcon.style.display = 'none'
                     btnLogOut.style.display = 'flex'
+                    if (timer) clearInterval(timer)
+                    timer = startLogOutTimer()
                 })
                     .then(() => {
                         blurPopUp.style.opacity = '0'
@@ -648,6 +647,7 @@ function popupFunc(popup, type) {
                     }))
             }
         }
+        document.documentElement.style.overflowY = 'unset'
     }
 
     btnConfirmTrans.addEventListener('click', confirmTrans)
@@ -675,6 +675,7 @@ function popupFunc(popup, type) {
                 }
             }
         }
+        document.documentElement.style.overflowY = 'unset'
     }
 
     btnCancelTrans.addEventListener('click', cancelTrans)
@@ -686,6 +687,8 @@ function popupFunc(popup, type) {
     setTimeout(() => {
         blurPopUp.style.opacity = '1'
     }, 0);
+    document.documentElement.style.overflowY = 'hidden'
+
     if (popup === popUpError) {
         popup.style.opacity = '1'
         popup.style.top = '24px'
@@ -694,6 +697,13 @@ function popupFunc(popup, type) {
             .then(() => {
                 popup.style.top = '-120px'
                 popup.style.opacity = '0'
+                if (popUpTransfers.style.top !== '50%' && loginPopUp.style.top !== '50%') {
+                    blurPopUp.style.opacity = '0'
+                    document.documentElement.style.overflowY = 'unset'
+                    setTimeout(() => {
+                        blurPopUp.style.display = 'none'
+                    }, 400);
+                }
             })
 
 
@@ -702,6 +712,7 @@ function popupFunc(popup, type) {
         setTimeout(() => {
             popup.style.opacity = '1'
             popup.style.top = '50%'
+          
         }, 0);
     }
 }
