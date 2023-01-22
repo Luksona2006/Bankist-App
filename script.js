@@ -98,9 +98,11 @@ const popUpHide = document.querySelectorAll('.popUp__hide')
 const deffaultStyles = function (inputs) {
     inputs.forEach(function(input) {
         input.style.border = '1px solid rgba(0, 0, 0, 0.281)'
-        input.previousElementSibling.querySelector('label').style.color = '#444'
-        input.previousElementSibling.querySelector('span').style.opacity = '0'
-        input.previousElementSibling.querySelector('span').style.display = 'none'
+        if(input !== inputLoginUsername && input !== inputLoginPin) {
+            input.previousElementSibling.querySelector('label').style.color = '#444'
+            input.previousElementSibling.querySelector('span').style.opacity = '0'
+            input.previousElementSibling.querySelector('span').style.display = 'none'
+        }
         input.value = ''
     })
 }
@@ -153,7 +155,7 @@ const createAccountFunc = function (e) {
         register = false;
     }
 
-    if(registerLocale.value.length < 5) {
+    if(registerLocale.value.length !== 5 || registerLocale.value[2] !== '-') {
         registerLocale.style.border = '1px solid #e52a5a'
         registerLocale.previousElementSibling.querySelector('label').style.color = '#e52a5a'
         registerLocale.previousElementSibling.querySelector('span').innerText = 'Wrong Format'
@@ -169,8 +171,8 @@ const createAccountFunc = function (e) {
             interestRate: 1.05, // %
             pin: +registerPin.value,
             movementsDates: [new Date().toISOString()],
-            currency: `${registerCurrency.value}`,
-            locale: `${registerLocale.value}`
+            currency: `${registerCurrency.value.toUpperCase()}`,
+            locale: `${registerLocale.value.slice(0,2) + registerLocale.value.slice(2,5).toUpperCase()}`
         })
 
         createUserNames(accounts)
