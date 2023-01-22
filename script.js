@@ -519,6 +519,7 @@ function popupFunc(popup, type) {
                         labelBalanceSpan.style.bottom = '-16px'
                         labelBalanceSpan.style.opacity = '1'
                         labelBalanceSpan.innerText = `${type === 'transfer' ? '-' + formatCur(amount, currentAccount.locale, currentAccount.currency) : '+' + formatCur(amount, currentAccount.locale, currentAccount.currency)}`
+                        document.documentElement.style.overflowY = 'unset'
                     }, 0)
 
 
@@ -564,10 +565,10 @@ function popupFunc(popup, type) {
                         labelWelcome.innerText = 'Log in to get started'
 
                         [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+                        document.documentElement.style.overflowY = 'unset'
                     }))
             }
         }
-        document.documentElement.style.overflowY = 'unset'
     }
 
     btnConfirmTrans.addEventListener('click', confirmTrans)
