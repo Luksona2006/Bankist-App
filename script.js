@@ -372,10 +372,10 @@ const transfers = function (e) {
     const amount = +inputTransferAmount.value;
     const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
 
-    if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30 && Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) >= 0) {
-        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`
-        popupFunc(popUpError, 'warn')
-        [inputTransferTo, inputTransferAmount].forEach(element => element.value = '')
+    if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30) {
+        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`;
+        popupFunc(popUpError, 'warn');
+        [inputTransferTo, inputTransferAmount].forEach(element => element.value = '');
     } else {
         if (amount > 0 && recieverAcc && currentAccount.balance >= amount && recieverAcc.username !== currentAccount.username) {
             popupFunc(popUpTransfers, 'transfer')
@@ -448,12 +448,12 @@ const closeFunc = function (e) {
             popUpErrorText.innerText = 'NO USERNAME INPUTTED'
         } else {
             if (currentAccount.username !== inputCloseUsername.value) {
-                popUpErrorText.innerText = 'WRONG USERNAME'
+                popUpErrorText.innerText = 'WRONG USERNAME!'
             } else {
                 if (inputClosePin === '') {
                     popUpErrorText.innerText = 'NO PIN INPUTTED'
                 } else {
-                    popUpErrorText.innerText = 'WRONG PIN'
+                    popUpErrorText.innerText = 'WRONG PIN!'
                 }
             }
         }
@@ -507,17 +507,17 @@ function popupFunc(popup, type) {
                 .then(() => delay(Math.floor(Math.random() * 6000) + 4000).then(() => {
                     if (type === 'transfer') {
                         const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
-                        recieverAcc.movements.push(amount)
-                        recieverAcc.movementsDates.push(new Date().toISOString())
-                    }
+                        recieverAcc.movements.push(amount);
+                        recieverAcc.movementsDates.push(new Date().toISOString());
+                    };
 
                     currentAccount.movements.push(type === 'transfer' ? -amount : amount);
 
                     // AFTER CLICK RESET ALL INPUT VALUES
 
-                    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+                    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '');
 
-                    updateUI(currentAccount)
+                    updateUI(currentAccount);
 
                     delay(100)
                         .then(() => {
@@ -745,8 +745,8 @@ btnLogOut.addEventListener('click', function (e) {
 
 [inputTransferTo, inputTransferAmount, inputLoanAmount].forEach(element => element.addEventListener('click', function() {
     if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30 && Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) >= 0) {
-        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`
-        popupFunc(popUpError, 'warn')
-        this.blur()
-    }
-}))
+        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`;
+        popupFunc(popUpError, 'warn');
+        this.blur();
+    };
+}));

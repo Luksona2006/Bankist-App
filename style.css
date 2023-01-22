@@ -643,7 +643,6 @@ h2 {
 
   .summary__value-blocks {
     flex-direction: column;
-    gap: 12px;
   }
 
   .movements__row {
