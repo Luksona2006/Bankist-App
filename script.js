@@ -26,9 +26,9 @@ const accounts = [
         pin: 2222,
         movementsDates: [
             '2023-01-19T00:11:53.178Z',
-            '2023-01-02T12:21:34.383Z',
-            '2023-01-08T02:35:52.904Z',
-            '2023-02-28T09:12:11.185Z',
+            '2023-01-06T12:21:34.383Z',
+            '2023-01-02T02:35:52.904Z',
+            '2023-01-01T09:12:11.185Z',
             '2022-12-24T19:14:34.604Z',
             '2022-12-02T15:25:52.194Z',
             '2022-08-11T22:17:23.929Z',
@@ -372,25 +372,32 @@ const transfers = function (e) {
     const amount = +inputTransferAmount.value;
     const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
 
-    if (amount > 0 && recieverAcc && currentAccount.balance >= amount && recieverAcc.username !== currentAccount.username) {
-        popupFunc(popUpTransfers, 'transfer')
-        popUpTransferText.textContent = `TRANSFER ${amount.toFixed(2)}€ TO ${recieverAcc.owner}(${recieverAcc.username})`
+    if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30 && Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) >= 0) {
+        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`
+        popupFunc(popUpError, 'warn')
+        [inputTransferTo, inputTransferAmount].forEach(element => element.value = '')
     } else {
-        popupFunc(popUpError)
-        if (recieverAcc === undefined) {
-            popUpErrorText.innerText = 'NO USER FOUND'
+        if (amount > 0 && recieverAcc && currentAccount.balance >= amount && recieverAcc.username !== currentAccount.username) {
+            popupFunc(popUpTransfers, 'transfer')
+            popUpTransferText.textContent = `TRANSFER ${amount.toFixed(2)}€ TO ${recieverAcc.owner}(${recieverAcc.username})`
         } else {
-            if (recieverAcc.username === currentAccount.username) {
-                popUpErrorText.innerText = 'CAN\'T TRANSFER TO YOURSELF'
+            popupFunc(popUpError)
+            if (recieverAcc === undefined) {
+                popUpErrorText.innerText = 'NO USER FOUND'
             } else {
-                if (currentAccount.balance < amount) {
-                    popUpErrorText.innerText = 'INSUFFICENT MONEY ON BALANCE'
+                if (recieverAcc.username === currentAccount.username) {
+                    popUpErrorText.innerText = 'CAN\'T TRANSFER TO YOURSELF'
                 } else {
-                    if (amount === 0 || amount === '') {
-                        popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
+                    if (currentAccount.balance < amount) {
+                        popUpErrorText.innerText = 'INSUFFICENT MONEY ON BALANCE'
+                    } else {
+                        if (amount === 0 || amount === '') {
+                            popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
+                        }
                     }
                 }
             }
+            [inputTransferTo, inputTransferAmount].forEach(element => element.value = '')
         }
     }
 }
@@ -404,20 +411,28 @@ const loanFunc = function (e) {
 
     const amount = +inputLoanAmount.value;
 
-    if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-        popupFunc(popUpTransfers, 'loan')
-        popUpTransferText.textContent = `REQUEST LOAN ${amount.toFixed(2)}€`
+    if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30 && Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) >= 0) {
+        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`
+        popupFunc(popUpError, 'warn')
+        inputLoanAmount.value = ''
     } else {
-        popupFunc(popUpError)
-        if (!currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-            popUpErrorText.textContent = `AVAIBLE ONLY MAX DEPOSIT'S 1000%`
+        if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+            popupFunc(popUpTransfers, 'loan')
+            popUpTransferText.textContent = `REQUEST LOAN ${amount.toFixed(2)}€`
         } else {
-            if (amount === 0 || amount === '') {
-                popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
+            popupFunc(popUpError)
+            if (!currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+                popUpErrorText.textContent = `AVAIBLE ONLY MAX DEPOSIT'S 1000%`
+            } else {
+                if (amount === 0 || amount === '') {
+                    popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
+                }
             }
+            inputLoanAmount.value = ''
         }
     }
 }
+
 
 btnLoan.addEventListener('click', loanFunc)
 
@@ -442,6 +457,8 @@ const closeFunc = function (e) {
                 }
             }
         }
+
+        [inputCloseUsername, inputClosePin].forEach(element => element.value = '')
         popupFunc(popUpError)
     }
 }
@@ -529,7 +546,6 @@ function popupFunc(popup, type) {
                         labelBalanceSpan.style.opacity = '0'
                     })
                 }))
-
         } else {
             if (type === 'close') {
                 const index = accounts.findIndex(acc => acc.username === currentAccount.username)
@@ -617,7 +633,7 @@ function popupFunc(popup, type) {
             .then(() => {
                 popup.style.top = '-120px'
                 popup.style.opacity = '0'
-    
+
                 if (popup.innerText !== 'WRONG USER' && popUpErrorText.innerText !== 'WRONG PIN') {
                     blurPopUp.style.opacity = '0'
                     document.documentElement.style.overflowY = 'unset'
@@ -633,7 +649,7 @@ function popupFunc(popup, type) {
         setTimeout(() => {
             popup.style.opacity = '1'
             popup.style.top = '50%'
-          
+
         }, 0);
     }
 }
@@ -723,7 +739,14 @@ btnLogOut.addEventListener('click', function (e) {
                 popUpLoading.style.display = 'none';
             })
         })
-})
+});
 
 
 
+[inputTransferTo, inputTransferAmount, inputLoanAmount].forEach(element => element.addEventListener('click', function() {
+    if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30 && Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) >= 0) {
+        popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`
+        popupFunc(popUpError, 'warn')
+        this.blur()
+    }
+}))
