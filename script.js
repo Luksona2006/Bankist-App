@@ -93,6 +93,18 @@ const popUpHide = document.querySelectorAll('.popUp__hide')
 /////////////////////////////////////////////////
 // Functions
 
+// Input Default values
+
+const deffaultStyles = function (inputs) {
+    inputs.forEach(function(input) {
+        input.style.border = '1px solid rgba(0, 0, 0, 0.281)'
+        input.previousElementSibling.querySelector('label').style.color = '#444'
+        input.previousElementSibling.querySelector('span').style.opacity = '0'
+        input.previousElementSibling.querySelector('span').style.display = 'none'
+        input.value = ''
+    })
+}
+
 // Create user names 
 
 const createUserNames = function (accounts) {
@@ -108,39 +120,47 @@ const createAccountFunc = function (e) {
     [registerName, registerSurname, registerPin, registerCurrency, registerLocale].forEach(element => {
         if (element.value === '') {
             element.style.border = '1px solid #e52a5a'
-            element.parentElement.querySelector('label').style.color = '#e52a5a'
-            element.parentElement.querySelector('div').querySelector('span').innerText = 'Can\'t be empty'
-            element.parentElement.querySelector('div').querySelector('span').style.display = 'block'
-            element.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
+            element.previousElementSibling.querySelector('label').style.color = '#e52a5a'
+            element.previousElementSibling.querySelector('span').innerText = 'Can\'t be empty'
+            element.previousElementSibling.querySelector('span').style.display = 'block'
+            element.previousElementSibling.querySelector('span').style.opacity = '1'
             register = false;
         } else {
             element.style.border = '1px solid rgba(0, 0, 0, 0.281)'
-            element.parentElement.querySelector('div').querySelector('label').style.color = '#444'
-            element.parentElement.querySelector('div').querySelector('span').style.opacity = '0'
-            element.parentElement.querySelector('div').querySelector('span').style.display = 'none'
+            element.previousElementSibling.querySelector('label').style.color = '#444'
+            element.previousElementSibling.querySelector('span').style.opacity = '0'
+            element.previousElementSibling.querySelector('span').style.display = 'none'
         }
     });
 
     [registerName, registerSurname, registerCurrency, registerLocale].forEach(element => {
         if (/\d+/.test(element.value)) {
             element.style.border = '1px solid #e52a5a'
-            element.parentElement.querySelector('label').style.color = '#e52a5a'
-            element.parentElement.querySelector('div').querySelector('span').innerText = 'Without numbers'
-            element.parentElement.querySelector('div').querySelector('span').style.display = 'block'
-            element.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
+            element.previousElementSibling.querySelector('label').style.color = '#e52a5a'
+            element.previousElementSibling.querySelector('span').innerText = 'Without numbers'
+            element.previousElementSibling.querySelector('span').style.display = 'block'
+            element.previousElementSibling.querySelector('span').style.opacity = '1'
             register = false;
         }
-    })
+    });
 
-
-    if (registerPin.value.length < 4 && registerPin.value.length > 0 || /[a-z]+/.test(registerPin.value)) {
+    if (registerPin.value.length !== 4 && !/[a-z]+/.test(registerPin.value)) {
         registerPin.style.border = '1px solid #e52a5a'
-        registerPin.parentElement.querySelector('div').querySelector('label').style.color = '#e52a5a'
-        registerPin.parentElement.querySelector('div').querySelector('span').innerText = 'Only numbers (4)'
-        registerPin.parentElement.querySelector('div').querySelector('span').style.display = 'block'
-        registerPin.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
+        registerPin.previousElementSibling.querySelector('label').style.color = '#e52a5a'
+        registerPin.previousElementSibling.querySelector('span').innerText = 'Only numbers (4)'
+        registerPin.previousElementSibling.querySelector('span').style.display = 'block'
+        registerPin.previousElementSibling.querySelector('span').style.opacity = '1'
         register = false;
     }
+
+    if(registerLocale.value.length < 5) {
+        registerLocale.style.border = '1px solid #e52a5a'
+        registerLocale.previousElementSibling.querySelector('label').style.color = '#e52a5a'
+        registerLocale.previousElementSibling.querySelector('span').innerText = 'Wrong Format'
+        registerLocale.previousElementSibling.querySelector('span').style.display = 'block'
+        registerLocale.previousElementSibling.querySelector('span').style.opacity = '1'
+        register = false;
+    }    
 
     if (register) {
         accounts.push({
@@ -375,7 +395,7 @@ const transfers = function (e) {
     if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30) {
         popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`;
         popupFunc(popUpError, 'warn');
-        [inputTransferTo, inputTransferAmount].forEach(element => element.value = '');
+        deffaultStyles([inputTransferTo, inputTransferAmount])
     } else {
         if (amount > 0 && recieverAcc && currentAccount.balance >= amount && recieverAcc.username !== currentAccount.username) {
             popupFunc(popUpTransfers, 'transfer')
@@ -397,7 +417,7 @@ const transfers = function (e) {
                     }
                 }
             }
-            [inputTransferTo, inputTransferAmount].forEach(element => element.value = '')
+            deffaultStyles([inputTransferTo, inputTransferAmount])
         }
     }
 }
@@ -458,7 +478,7 @@ const closeFunc = function (e) {
             }
         }
 
-        [inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+        deffaultStyles([inputCloseUsername, inputClosePin])
         popupFunc(popUpError)
     }
 }
@@ -515,7 +535,7 @@ function popupFunc(popup, type) {
 
                     // AFTER CLICK RESET ALL INPUT VALUES
 
-                    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '');
+                    deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
 
                     updateUI(currentAccount);
 
@@ -555,8 +575,8 @@ function popupFunc(popup, type) {
                         popUpLoading.style.opacity = '1'
                     })
                     .then(() => delay(Math.floor(Math.random() * 6000) + 3000).then(() => {
-                        [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
-
+                        deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
+                        
                         updateUI(currentAccount)
 
                         delay(100)
@@ -580,7 +600,7 @@ function popupFunc(popup, type) {
                         }, 1000);
                         labelWelcome.innerText = 'Log in to get started'
 
-                        [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+                        deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
                         document.documentElement.style.overflowY = 'unset'
                     }))
             }
@@ -697,11 +717,14 @@ popUpHide.forEach(element => {
 
         registerPopUp.style.opacity = '0'
         registerPopUp.style.top = '-50%'
+        
 
         blurPopUp.style.opacity = '0'
         setTimeout(() => {
             blurPopUp.style.display = 'none'
         }, 500);
+
+        deffaultStyles([registerName, registerSurname, registerPin, registerCurrency, registerLocale, inputLoginUsername, inputLoginPin])
     })
 })
 
@@ -717,7 +740,7 @@ registerBtn.addEventListener('click', function (e) {
 btnLogOut.addEventListener('click', function (e) {
     e.preventDefault();
     blurPopUp.style.display = 'block';
-    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+    deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
     delay(0)
         .then(() => {
             blurPopUp.style.opacity = '1';
