@@ -41,6 +41,18 @@ nav {
   padding: 2rem 0;
 }
 
+nav div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+nav div h4 {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333
+}
+
 .container {
   max-width: 100rem;
   width: 100%;
