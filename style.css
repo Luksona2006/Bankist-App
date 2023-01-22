@@ -178,7 +178,7 @@ nav {
   border: none;
   display: flex;
   align-items: center;
-  background-color: #1F51FF;
+  background-image: linear-gradient(to top left, #7591f7, #0037ff);
   border-radius: 4px;
   padding: 8px 12px;
   color: #F5F5F5;
@@ -191,7 +191,7 @@ nav {
 .register__btn, .create__btn {
   width: 70%;
   margin: 0 auto;
-  background-color: #9be15d;
+  background-image: linear-gradient(to top left, #39b385, #9be15d);
   font-size: 2.2rem;
   padding: 8px 12px;
   color: #F5F5F5;
