@@ -612,6 +612,11 @@ h2 {
   .movements__row {
     padding: 2.25rem;
   }
+
+  .movements {
+    overflow: scroll;
+    height: 320px;
+  }
 }
 
 @media(max-width: 600px) {
