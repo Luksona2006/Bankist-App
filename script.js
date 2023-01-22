@@ -109,7 +109,7 @@ const createAccountFunc = function (e) {
         if (element.value === '') {
             element.style.border = '1px solid #e52a5a'
             element.parentElement.querySelector('label').style.color = '#e52a5a'
-            element.parentElement.querySelector('div').querySelector('span').textContent = 'Can\'t be empty'
+            element.parentElement.querySelector('div').querySelector('span').innerText = 'Can\'t be empty'
             element.parentElement.querySelector('div').querySelector('span').style.display = 'block'
             element.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
             register = false;
@@ -125,7 +125,7 @@ const createAccountFunc = function (e) {
         if (/\d+/.test(element.value)) {
             element.style.border = '1px solid #e52a5a'
             element.parentElement.querySelector('label').style.color = '#e52a5a'
-            element.parentElement.querySelector('div').querySelector('span').textContent = 'Without numbers'
+            element.parentElement.querySelector('div').querySelector('span').innerText = 'Without numbers'
             element.parentElement.querySelector('div').querySelector('span').style.display = 'block'
             element.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
             register = false;
@@ -136,7 +136,7 @@ const createAccountFunc = function (e) {
     if (registerPin.value.length < 4 && registerPin.value.length > 0 || /[a-z]+/.test(registerPin.value)) {
         registerPin.style.border = '1px solid #e52a5a'
         registerPin.parentElement.querySelector('div').querySelector('label').style.color = '#e52a5a'
-        registerPin.parentElement.querySelector('div').querySelector('span').textContent = 'Only numbers (4)'
+        registerPin.parentElement.querySelector('div').querySelector('span').innerText = 'Only numbers (4)'
         registerPin.parentElement.querySelector('div').querySelector('span').style.display = 'block'
         registerPin.parentElement.querySelector('div').querySelector('span').style.opacity = '1'
         register = false;
@@ -276,7 +276,7 @@ const startLogOutTimer = function () {
         labelTimer.textContent = `${min}:${seconds}`;
         if (time === 0) {
             clearInterval(timer)
-            labelWelcome.textContent = 'Log in to get started'
+            labelWelcome.innerText = 'Log in to get started'
             containerApp.style.opacity = '0'
             setTimeout(() => {
                 containerApp.style.display = 'none'
@@ -378,16 +378,16 @@ const transfers = function (e) {
     } else {
         popupFunc(popUpError)
         if (recieverAcc === undefined) {
-            popUpErrorText.textContent = 'NO USER FOUND'
+            popUpErrorText.innerText = 'NO USER FOUND'
         } else {
             if (recieverAcc.username === currentAccount.username) {
-                popUpErrorText.textContent = 'CAN\'T TRANSFER TO YOURSELF'
+                popUpErrorText.innerText = 'CAN\'T TRANSFER TO YOURSELF'
             } else {
                 if (currentAccount.balance < amount) {
-                    popUpErrorText.textContent = 'INSUFFICENT MONEY ON BALANCE'
+                    popUpErrorText.innerText = 'INSUFFICENT MONEY ON BALANCE'
                 } else {
                     if (amount === 0 || amount === '') {
-                        popUpErrorText.textContent = 'NO AMOUNT INPUTTED'
+                        popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
                     }
                 }
             }
@@ -413,7 +413,7 @@ const loanFunc = function (e) {
             popUpErrorText.textContent = `AVAIBLE ONLY MAX DEPOSIT'S 1000%`
         } else {
             if (amount === 0 || amount === '') {
-                popUpErrorText.textContent = 'NO AMOUNT INPUTTED'
+                popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
             }
         }
     }
@@ -427,16 +427,16 @@ const closeFunc = function (e) {
     e.preventDefault();
     if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === +inputClosePin.value) {
         popupFunc(popUpTransfers, 'close')
-        popUpTransferText.textContent = `DELETE ACCOUNT`
+        popUpTransferText.innerText = `DELETE ACCOUNT`
     } else {
         if (inputCloseUsername.value === '') {
-            popUpErrorText.textContent = 'NO USERNAME INPUTTED'
+            popUpErrorText.innerText = 'NO USERNAME INPUTTED'
         } else {
             if (currentAccount.username !== inputCloseUsername.value) {
                 popUpErrorText.innerText = 'WRONG USERNAME'
             } else {
                 if (inputClosePin === '') {
-                    popUpErrorText.textContent = 'NO PIN INPUTTED'
+                    popUpErrorText.innerText = 'NO PIN INPUTTED'
                 } else {
                     popUpErrorText.innerText = 'WRONG PIN'
                 }
@@ -531,7 +531,6 @@ function popupFunc(popup, type) {
 
         } else {
             if (type === 'close') {
-
                 const index = accounts.findIndex(acc => acc.username === currentAccount.username)
                 delay(0)
                     .then(() => {
@@ -562,7 +561,7 @@ function popupFunc(popup, type) {
                         setTimeout(() => {
                             containerApp.style.display = 'none';
                         }, 1000);
-                        labelWelcome.textContent = 'Log in to get started'
+                        labelWelcome.innerText = 'Log in to get started'
 
                         [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
                     }))
@@ -575,8 +574,7 @@ function popupFunc(popup, type) {
 
     // CANCEL TRANSFER
 
-    const cancelTrans = function (e) {
-        e.preventDefault()
+    const cancelTrans = function () {
         popUpTransfers.style.opacity = '0'
         blurPopUp.style.opacity = '0'
         setTimeout(() => {
@@ -618,7 +616,8 @@ function popupFunc(popup, type) {
             .then(() => {
                 popup.style.top = '-120px'
                 popup.style.opacity = '0'
-                if (popUpTransfers.style.top !== '50%' && loginPopUp.style.top !== '50%') {
+    
+                if (popup.innerText !== 'WRONG USER' && popUpErrorText.innerText !== 'WRONG PIN') {
                     blurPopUp.style.opacity = '0'
                     document.documentElement.style.overflowY = 'unset'
                     setTimeout(() => {
@@ -644,7 +643,6 @@ function popupFunc(popup, type) {
 let sorted = false;
 
 const sortFunc = function (e) {
-    e.preventDefault();
     displayMovements(currentAccount, !sorted);
     sorted = !sorted;
 }
@@ -662,8 +660,7 @@ inputLoanAmount.onkeyup = function () {
 }
 
 
-btnLoginIcon.addEventListener('click', function (e) {
-    e.preventDefault();
+btnLoginIcon.addEventListener('click', function () {
     registerPopUp.style.opacity = '0'
     registerPopUp.style.top = '-50%'
 
@@ -677,8 +674,7 @@ btnLoginIcon.addEventListener('click', function (e) {
 })
 
 popUpHide.forEach(element => {
-    element.addEventListener('click', function (e) {
-        e.preventDefault();
+    element.addEventListener('click', function () {
         loginPopUp.style.opacity = '0'
         loginPopUp.style.top = '-50%'
 
@@ -716,7 +712,7 @@ btnLogOut.addEventListener('click', function (e) {
             containerApp.style.opacity = '0';
             blurPopUp.style.opacity = '0';
             containerApp.style.display = 'none';
-            labelWelcome.textContent = 'Log in to get started';
+            labelWelcome.innerText = 'Log in to get started';
             btnLoginIcon.style.display = 'flex';
             btnLogOut.style.display = 'none';
         }))
