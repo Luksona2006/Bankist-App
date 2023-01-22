@@ -783,26 +783,28 @@ registerBtn.addEventListener('click', function (e) {
 btnLogOut.addEventListener('click', function (e) {
     e.preventDefault();
     blurPopUp.style.display = 'block';
+    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
     delay(0)
         .then(() => {
             blurPopUp.style.opacity = '1';
-            popUpLoading.style.display = 'flex'
-            popUpLoading.style.opacity = '1'
+            popUpLoading.style.display = 'flex';
+            popUpLoading.style.opacity = '1';
         })
         .then(() => delay(Math.floor(Math.random() * 4000) + 2000).then(() => {
-            popUpLoading.style.opacity = '0'
+            popUpLoading.style.opacity = '0';
             containerApp.style.opacity = '0';
             blurPopUp.style.opacity = '0';
             containerApp.style.display = 'none';
-            labelWelcome.textContent = 'Log in to get started'
-            btnLoginIcon.style.display = 'flex'
-            btnLogOut.style.display = 'none'
-            delay(100).then(() => {
-                popUpLoading.style.display = 'none'
-                blurPopUp.stlye.display = 'none'
-            })
+            labelWelcome.textContent = 'Log in to get started';
+            btnLoginIcon.style.display = 'flex';
+            btnLogOut.style.display = 'none';
         }))
-    [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
+        .then(() => {
+            delay(400).then(() => {
+                blurPopUp.style.display = 'none';
+                popUpLoading.style.display = 'none';
+            })
+        })
 })
 
 

@@ -101,7 +101,7 @@ nav {
   display: none;
 }
 
-.login__icon:hover {
+.login__icon:hover , .logOut__btn:hover {
   transform: scale(1.05);
 }
 
