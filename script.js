@@ -566,7 +566,7 @@ function popupFunc(popup, type) {
                     popUpLoading.style.display = 'flex'
                     popUpLoading.style.opacity = '1'
                 })
-                .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+                .then(() => delay(Math.floor(Math.random() * 6000) + 4000).then(() => {
                     if (type === 'transfer') {
                         const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
                         recieverAcc.movements.push(amount)
@@ -617,7 +617,7 @@ function popupFunc(popup, type) {
                         popUpLoading.style.display = 'flex'
                         popUpLoading.style.opacity = '1'
                     })
-                    .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+                    .then(() => delay(Math.floor(Math.random() * 6000) + 3000).then(() => {
                         [inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin].forEach(element => element.value = '')
 
                         updateUI(currentAccount)
@@ -789,7 +789,7 @@ btnLogOut.addEventListener('click', function (e) {
             popUpLoading.style.display = 'flex'
             popUpLoading.style.opacity = '1'
         })
-        .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
+        .then(() => delay(Math.floor(Math.random() * 4000) + 2000).then(() => {
             popUpLoading.style.opacity = '0'
             containerApp.style.opacity = '0';
             blurPopUp.style.opacity = '0';
