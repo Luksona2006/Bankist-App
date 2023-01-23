@@ -492,9 +492,7 @@ btnClose.addEventListener('click', closeFunc)
 
 // Pop Up
 
-const delay = ms => {
-    return new Promise(resolve => setTimeout(() => resolve(), ms))
-}
+const delay = ms => new Promise(resolve => setTimeout(() => resolve(), ms))
 
 function popupFunc(popup, type) {
 
@@ -503,7 +501,7 @@ function popupFunc(popup, type) {
     timer = startLogOutTimer();
 
 
-    // CONFIRM && CANCEL TRANSFER || LOAN || CLOSE ACC
+    // CONFIRM ACTION
     const confirmTrans = function (e) {
         e.preventDefault()
 
@@ -613,8 +611,7 @@ function popupFunc(popup, type) {
 
     btnConfirmTrans.addEventListener('click', confirmTrans)
 
-    // CANCEL TRANSFER
-
+    // CANCEL ACTION
     const cancelTrans = function () {
         popUpTransfers.style.opacity = '0'
         blurPopUp.style.opacity = '0'
@@ -666,8 +663,6 @@ function popupFunc(popup, type) {
                     }, 400);
                 }
             })
-
-
     } else {
         popup.style.display = 'flex'
         setTimeout(() => {
