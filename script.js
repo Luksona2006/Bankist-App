@@ -405,7 +405,7 @@ const transfers = function (e) {
     } else {
         if (amount > 0 && recieverAcc && currentAccount.balance >= amount && recieverAcc.username !== currentAccount.username) {
             popupFunc(popUpTransfers, 'transfer')
-            popUpTransferText.textContent = `TRANSFER ${formatCur(amount, currentAccount.locale, currentAccount.currency)}€ TO ${recieverAcc.owner}(${recieverAcc.username})`
+            popUpTransferText.textContent = `TRANSFER ${formatCur(amount, currentAccount.locale, currentAccount.currency)} TO ${recieverAcc.owner}(${recieverAcc.username})`
         } else {
             popupFunc(popUpError)
             if (recieverAcc === undefined) {
