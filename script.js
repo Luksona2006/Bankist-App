@@ -186,8 +186,9 @@ const createAccountFunc = function (e) {
                 popUpLoading.style.opacity = '1'
             })
             .then(() => delay(Math.floor(Math.random() * 7000) + 4000).then(() => {
-                popUpLoading.style.opacity = '0'
-                blurPopUp.style.opacity = '0'
+                popUpLoading.style.opacity = '0';
+                blurPopUp.style.opacity = '0';
+                [registerName, registerSurname, registerPin, registerCurrency, registerLocale].forEach(element => element.value = '');
                 delay(100).then(() => {
                     blurPopUp.style.display = 'none'
                     popUpLoading.style.display = 'none'
