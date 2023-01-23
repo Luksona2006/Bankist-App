@@ -97,15 +97,19 @@ const popUpHide = document.querySelectorAll('.popUp__hide')
 
 const deffaultStyles = function (inputs) {
     inputs.forEach(function(input) {
-        input.style.border = '1px solid rgba(0, 0, 0, 0.281)'
-        if(input !== inputLoginUsername && input !== inputLoginPin) {
-            input.previousElementSibling.querySelector('label').style.color = '#444'
-            input.previousElementSibling.querySelector('span').style.opacity = '0'
-            input.previousElementSibling.querySelector('span').style.display = 'none'
-        }
-        input.value = ''
+        input.style.border = '1px solid rgba(0, 0, 0, 0.281)';
+        input.previousElementSibling.querySelector('label').style.color = '#444';
+        input.previousElementSibling.querySelector('span').style.opacity = '0';
+        input.previousElementSibling.querySelector('span').style.display = 'none';
+        input.value = '';
     })
 }
+
+const emptyValue = function (inputs) {
+    inputs.forEach(function(input) {
+        input.value = '';
+    });
+};
 
 // Create user names 
 
@@ -366,8 +370,7 @@ const logInfunc = function (e) {
 
                         labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
-                        inputLoginUsername.value = '';
-                        inputLoginPin.value = '';
+                        emptyValue([inputLoginUsername, inputLoginPin])
 
                         inputLoginUsername.blur();
                         inputLoginPin.blur();
@@ -381,7 +384,7 @@ const logInfunc = function (e) {
         } else {
             popUpErrorText.innerText = 'WRONG PIN'
         }
-
+        emptyValue([inputLoginUsername, inputLoginPin])
         popupFunc(popUpError)
     }
 }
@@ -398,7 +401,7 @@ const transfers = function (e) {
     if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30) {
         popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`;
         popupFunc(popUpError, 'warn');
-        deffaultStyles([inputTransferTo, inputTransferAmount])
+        emptyValue([inputTransferTo, inputTransferAmount])
     } else {
         if (amount > 0 && recieverAcc && currentAccount.balance >= amount && recieverAcc.username !== currentAccount.username) {
             popupFunc(popUpTransfers, 'transfer')
@@ -420,7 +423,7 @@ const transfers = function (e) {
                     }
                 }
             }
-            deffaultStyles([inputTransferTo, inputTransferAmount])
+            emptyValue([inputTransferTo, inputTransferAmount])
         }
     }
 }
@@ -437,11 +440,11 @@ const loanFunc = function (e) {
     if (Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) <= 30 && Math.floor((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000) >= 0) {
         popUpErrorText.innerText = `Wait ${Math.floor(30 - ((new Date() - new Date(currentAccount.movementsDates.at(-1))) / 1000))} seconds`
         popupFunc(popUpError, 'warn')
-        inputLoanAmount.value = ''
+        emptyValue([inputLoanAmount])
     } else {
         if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
             popupFunc(popUpTransfers, 'loan')
-            popUpTransferText.textContent = `REQUEST LOAN ${amount.toFixed(2)}€`
+            popUpTransferText.textContent = `REQUEST LOAN ${formatCur(amount, currentAccount.locale, currentAccount.currency)}`
         } else {
             popupFunc(popUpError)
             if (!currentAccount.movements.some(mov => mov >= amount * 0.1)) {
@@ -451,7 +454,7 @@ const loanFunc = function (e) {
                     popUpErrorText.innerText = 'NO AMOUNT INPUTTED'
                 }
             }
-            inputLoanAmount.value = ''
+            emptyValue([inputLoanAmount])
         }
     }
 }
@@ -480,8 +483,7 @@ const closeFunc = function (e) {
                 }
             }
         }
-
-        deffaultStyles([inputCloseUsername, inputClosePin])
+        emptyValue([inputCloseUsername, inputClosePin])
         popupFunc(popUpError)
     }
 }
@@ -512,76 +514,35 @@ function popupFunc(popup, type) {
 
 
         if (type === 'transfer' || type === 'loan') {
-            currentAccount.movementsDates.push(new Date().toISOString())
             const amountFunc = () => type === 'transfer' ? +inputTransferAmount.value : +inputLoanAmount.value;
             const amount = amountFunc();
+            if(amount !== 0) {
+                currentAccount.movementsDates.push(new Date().toISOString())
 
-            if (labelBalanceSpan.style.bottom == '-16px') {
-                labelBalance.style.color = '#444'
-                labelBalanceSpan.style.opacity = '0'
-                labelBalanceSpan.style.bottom = '-36px'
-            }
-
-            delay(0)
-                .then(() => {
-                    popUpLoading.style.display = 'flex'
-                    popUpLoading.style.opacity = '1'
-                })
-                .then(() => delay(Math.floor(Math.random() * 6000) + 4000).then(() => {
-                    if (type === 'transfer') {
-                        const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
-                        recieverAcc.movements.push(amount);
-                        recieverAcc.movementsDates.push(new Date().toISOString());
-                    };
-
-                    currentAccount.movements.push(type === 'transfer' ? -amount : amount);
-
-                    // AFTER CLICK RESET ALL INPUT VALUES
-
-                    deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
-
-                    updateUI(currentAccount);
-
-                    delay(100)
-                        .then(() => {
-                            blurPopUp.style.opacity = '0'
-                            popUpLoading.style.opacity = '0'
-                        })
-                        .then(() => delay(500))
-                        .then(() => {
-                            blurPopUp.style.display = 'none'
-                            popUpLoading.style.display = 'none'
-                        })
-
-                    setTimeout(() => {
-                        labelBalance.style.color = `${type === 'transfer' ? '#D2042D' : '#32CD32'}`
-                        labelBalanceSpan.style.color = `${type === 'transfer' ? '#e52a5a' : '#9be15d'}`
-                        labelBalanceSpan.style.bottom = '-16px'
-                        labelBalanceSpan.style.opacity = '1'
-                        labelBalanceSpan.innerText = `${type === 'transfer' ? '-' + formatCur(amount, currentAccount.locale, currentAccount.currency) : '+' + formatCur(amount, currentAccount.locale, currentAccount.currency)}`
-                        document.documentElement.style.overflowY = 'unset'
-                    }, 0)
-
-
-                    delay(2000).then(() => {
-                        labelBalance.style.color = '#444'
-                        labelBalanceSpan.style.bottom = '-36px'
-                        labelBalanceSpan.style.opacity = '0'
-                    })
-                }))
-        } else {
-            if (type === 'close') {
-                const index = accounts.findIndex(acc => acc.username === currentAccount.username)
+                if (labelBalanceSpan.style.bottom == '-16px') {
+                    labelBalance.style.color = '#444'
+                    labelBalanceSpan.style.opacity = '0'
+                    labelBalanceSpan.style.bottom = '-36px'
+                }
+    
                 delay(0)
                     .then(() => {
                         popUpLoading.style.display = 'flex'
                         popUpLoading.style.opacity = '1'
                     })
-                    .then(() => delay(Math.floor(Math.random() * 6000) + 3000).then(() => {
-                        deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
-                        
-                        updateUI(currentAccount)
-
+                    .then(() => delay(Math.floor(Math.random() * 6000) + 4000).then(() => {
+                        if (type === 'transfer') {
+                            const recieverAcc = accounts.find(acc => acc.username === inputTransferTo.value);
+                            recieverAcc.movements.push(amount);
+                            recieverAcc.movementsDates.push(new Date().toISOString());
+                        };
+    
+                        currentAccount.movements.push(type === 'transfer' ? -amount : amount);
+    
+                        emptyValue([inputTransferTo, inputTransferAmount, inputLoanAmount])
+    
+                        updateUI(currentAccount);
+    
                         delay(100)
                             .then(() => {
                                 blurPopUp.style.opacity = '0'
@@ -592,20 +553,60 @@ function popupFunc(popup, type) {
                                 blurPopUp.style.display = 'none'
                                 popUpLoading.style.display = 'none'
                             })
-                    }).then(() => {
-                        // Delete Account
-                        accounts.splice(index, 1)
-
-                        // Hide UI
-                        containerApp.style.opacity = '0';
+    
                         setTimeout(() => {
-                            containerApp.style.display = 'none';
-                        }, 1000);
-                        labelWelcome.innerText = 'Log in to get started'
-
-                        deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
-                        document.documentElement.style.overflowY = 'unset'
+                            labelBalance.style.color = `${type === 'transfer' ? '#D2042D' : '#32CD32'}`
+                            labelBalanceSpan.style.color = `${type === 'transfer' ? '#e52a5a' : '#9be15d'}`
+                            labelBalanceSpan.style.bottom = '-16px'
+                            labelBalanceSpan.style.opacity = '1'
+                            labelBalanceSpan.innerText = `${type === 'transfer' ? '-' + formatCur(amount, currentAccount.locale, currentAccount.currency) : '+' + formatCur(amount, currentAccount.locale, currentAccount.currency)}`
+                            document.documentElement.style.overflowY = 'unset'
+                        }, 0)
+    
+    
+                        delay(2000).then(() => {
+                            labelBalance.style.color = '#444'
+                            labelBalanceSpan.style.bottom = '-36px'
+                            labelBalanceSpan.style.opacity = '0'
+                        })
                     }))
+            } else {
+                if (type === 'close') {
+                    const index = accounts.findIndex(acc => acc.username === currentAccount.username)
+                    delay(0)
+                        .then(() => {
+                            popUpLoading.style.display = 'flex'
+                            popUpLoading.style.opacity = '1'
+                        })
+                        .then(() => delay(Math.floor(Math.random() * 6000) + 3000).then(() => {
+                            emptyValue([inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin])
+                            
+                            updateUI(currentAccount)
+    
+                            delay(100)
+                                .then(() => {
+                                    blurPopUp.style.opacity = '0'
+                                    popUpLoading.style.opacity = '0'
+                                })
+                                .then(() => delay(500))
+                                .then(() => {
+                                    blurPopUp.style.display = 'none'
+                                    popUpLoading.style.display = 'none'
+                                })
+                        }).then(() => {
+                            // Delete Account
+                            accounts.splice(index, 1)
+    
+                            // Hide UI
+                            containerApp.style.opacity = '0';
+                            setTimeout(() => {
+                                containerApp.style.display = 'none';
+                            }, 1000);
+                            labelWelcome.innerText = 'Log in to get started'
+    
+                            document.documentElement.style.overflowY = 'unset'
+                        }))
+                }
             }
         }
     }
@@ -622,15 +623,15 @@ function popupFunc(popup, type) {
         }, 500);
 
         if (type === 'transfer') {
-            inputTransferAmount.value = ''
-            inputTransferTo.value = ''
+            emptyValue([inputTransferTo, inputTransferAmount])
         } else {
             if (type === 'loan') {
-                inputLoanAmount.value = ''
+                emptyValue([inputLoanAmount])
             } else {
                 if (type === 'close') {
                     inputCloseUsername.value = '';
                     inputClosePin.value = '';
+                    emptyValue([inputCloseUsername, inputClosePin])
                 }
             }
         }
@@ -692,11 +693,11 @@ btnSort.addEventListener('click', sortFunc)
 // FIRST NUMBER SHOULDN'T EQUAL TO 0
 
 inputTransferAmount.onkeyup = function () {
-    if (this.value[0] === '0') this.value = 0;
+    if (this.value[0] === '0') this.value = '';
 }
 
 inputLoanAmount.onkeyup = function () {
-    if (this.value[0] === '0') this.value = 0;
+    if (this.value[0] === '0') this.value = '';
 }
 
 
