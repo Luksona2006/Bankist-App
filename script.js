@@ -119,18 +119,22 @@ const createUserNames = function (accounts) {
 
 createUserNames(accounts)
 
+const registerInputWarn = function (input, text) {
+    input.style.border = '1px solid #e52a5a'
+    input.previousElementSibling.querySelector('label').style.color = '#e52a5a'
+    input.previousElementSibling.querySelector('span').innerText = text
+    input.previousElementSibling.querySelector('span').style.display = 'block'
+    input.previousElementSibling.querySelector('span').style.opacity = '1'
+    register = false;
+}
+
 
 const createAccountFunc = function (e) {
     e.preventDefault();
     let register = true;
     [registerName, registerSurname, registerPin, registerCurrency, registerLocale].forEach(element => {
         if (element.value === '') {
-            element.style.border = '1px solid #e52a5a'
-            element.previousElementSibling.querySelector('label').style.color = '#e52a5a'
-            element.previousElementSibling.querySelector('span').innerText = 'Can\'t be empty'
-            element.previousElementSibling.querySelector('span').style.display = 'block'
-            element.previousElementSibling.querySelector('span').style.opacity = '1'
-            register = false;
+            registerInputWarn(element, `Can't be empty`)
         } else {
             element.style.border = '1px solid rgba(0, 0, 0, 0.281)'
             element.previousElementSibling.querySelector('label').style.color = '#444'
@@ -141,31 +145,16 @@ const createAccountFunc = function (e) {
 
     [registerName, registerSurname, registerCurrency, registerLocale].forEach(element => {
         if (/\d+/.test(element.value)) {
-            element.style.border = '1px solid #e52a5a'
-            element.previousElementSibling.querySelector('label').style.color = '#e52a5a'
-            element.previousElementSibling.querySelector('span').innerText = 'Without numbers'
-            element.previousElementSibling.querySelector('span').style.display = 'block'
-            element.previousElementSibling.querySelector('span').style.opacity = '1'
-            register = false;
+            registerInputWarn(element, 'Without numbers')
         }
     });
 
     if (registerPin.value.length !== 4 && !/[a-z]+/.test(registerPin.value)) {
-        registerPin.style.border = '1px solid #e52a5a'
-        registerPin.previousElementSibling.querySelector('label').style.color = '#e52a5a'
-        registerPin.previousElementSibling.querySelector('span').innerText = 'Only numbers (4)'
-        registerPin.previousElementSibling.querySelector('span').style.display = 'block'
-        registerPin.previousElementSibling.querySelector('span').style.opacity = '1'
-        register = false;
+        registerInputWarn(registerPin, 'Only numbers (4)')
     }
 
     if(registerLocale.value.length !== 5 || registerLocale.value[2] !== '-') {
-        registerLocale.style.border = '1px solid #e52a5a'
-        registerLocale.previousElementSibling.querySelector('label').style.color = '#e52a5a'
-        registerLocale.previousElementSibling.querySelector('span').innerText = 'Wrong Format'
-        registerLocale.previousElementSibling.querySelector('span').style.display = 'block'
-        registerLocale.previousElementSibling.querySelector('span').style.opacity = '1'
-        register = false;
+        registerInputWarn(registerLocale, 'Wrong Format')
     }    
 
     if (register) {
@@ -739,7 +728,6 @@ registerBtn.addEventListener('click', function (e) {
 btnLogOut.addEventListener('click', function (e) {
     e.preventDefault();
     blurPopUp.style.display = 'block';
-    deffaultStyles[inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin]
     delay(0)
         .then(() => {
             blurPopUp.style.opacity = '1';
@@ -754,6 +742,7 @@ btnLogOut.addEventListener('click', function (e) {
             labelWelcome.innerText = 'Log in to get started';
             btnLoginIcon.style.display = 'flex';
             btnLogOut.style.display = 'none';
+            emptyValue([inputTransferTo, inputTransferAmount, inputLoanAmount, inputCloseUsername, inputClosePin])
         }))
         .then(() => {
             delay(400).then(() => {
